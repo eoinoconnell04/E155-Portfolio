@@ -1,0 +1,10 @@
+---
+title: "Hello Quarto"
+description: "Welcome to my Quarto portfolio"
+author: "Eoin O'Connell"
+date: "8/28/25"
+categories:
+  - reflection
+  - labreport
+draft: false
+---

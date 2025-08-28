@@ -1,0 +1,17 @@
+---
+title: "E155 Portfolio"
+about:
+  template: jolla
+  image: hiking_photo.jpeg
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/eoin-o-connell-9a3067278/
+    - icon: github
+      text: Github
+      href: https://github.com/eoinoconnell04
+---
+
+I am Eoin O'Connell, a junior engineering student at Harvey Mudd College. I participate on the CMS Cross Country and Track and Field teams. This is my portfolio for E155, Microprocessor Systems: Design & Application.
+
+
