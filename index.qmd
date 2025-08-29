@@ -2,7 +2,7 @@
 title: "E155 Portfolio"
 about:
   template: jolla
-  image: hiking_photo.jpeg
+  image: images/hiking_photo.jpeg
   links:
     - icon: linkedin
       text: LinkedIn

@@ -1,10 +1,10 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "E155 Blog",
     "section": "",
-    "text": "About this site"
+    "text": "Hello Quarto\n\n\nWelcome to my Quarto portfolio\n\n\n\n\n\nAug 28, 2025\n\n\nEoin O’Connell\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -12,5 +12,12 @@
     "title": "E155 Portfolio",
     "section": "",
     "text": "I am Eoin O’Connell, a junior engineering student at Harvey Mudd College. I participate on the CMS Cross Country and Track and Field teams. This is my portfolio for E155, Microprocessor Systems: Design & Application."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
   }
 ]
