@@ -25,7 +25,7 @@
     "href": "labs.html",
     "title": "Labs",
     "section": "",
-    "text": "Lab1: FPGA and MCU Setup and Testing\nLab 2: Multiplexed 7-Segment Display\nLab 3: Keypad Scanner\nLab 4: Digital Audio\nLab 5: Interrupts"
+    "text": "Lab1: FPGA and MCU Setup and Testing"
   },
   {
     "objectID": "labs/lab2/lab2.html",
@@ -54,5 +54,138 @@
     "title": "Initial Reflections",
     "section": "",
     "text": "This is my third digital design class at Harvey Mudd, starting with E85: Digital Electronics and Computer Engineering, followed by E154: System-on-Chip Design, and now E155: Microprocessor Systems Design and Application.\nLast summer I worked as a Physical Design intern at Tenstorrent, working on a RISC-V processor, so I am excited to get exposure to a completely different part of computer engineering, for very different applications.\nI expect this class to be quite challenging, particularly with time managament. My goals are to stay multiple days ahead of due dates—not my normal inclination—to avoid long nights and extra stress if possible.\nI am quite excited for a lot of the labs, particularly the 7 segment display lab, as well as the ditial audio lab. I think the 7 segment display is a very clear application that has a lot of uses, and I think it would be cool to connect multiple displays together to be able to print out longer messages. Additionally, as a musician, I am excited to work on the digital audio lab, and would be excited to expand this to include a keyboard.\nOverall, I am very excited to see where this class takes me."
+  },
+  {
+    "objectID": "labs.html#lab1",
+    "href": "labs.html#lab1",
+    "title": "Labs",
+    "section": "",
+    "text": "test"
+  },
+  {
+    "objectID": "labs.html#lab2",
+    "href": "labs.html#lab2",
+    "title": "Labs",
+    "section": "Lab2:",
+    "text": "Lab2:\nLab 2: Multiplexed 7-Segment Display"
+  },
+  {
+    "objectID": "labs.html#lab2a",
+    "href": "labs.html#lab2a",
+    "title": "Labs",
+    "section": "Lab2a:",
+    "text": "Lab2a:\ntest2\nLab1: FPGA and MCU Setup and Testing\nLab 2: Multiplexed 7-Segment Display\nLab 3: Keypad Scanner\nLab 4: Digital Audio\nLab 5: Interrupts"
+  },
+  {
+    "objectID": "labs.html#lab2-1",
+    "href": "labs.html#lab2-1",
+    "title": "Labs",
+    "section": "Lab2:",
+    "text": "Lab2:\nLab 3: Keypad Scanner\nLab 4: Digital Audio\nLab 5: Interrupts"
+  },
+  {
+    "objectID": "labs.html#lab3",
+    "href": "labs.html#lab3",
+    "title": "Labs",
+    "section": "Lab3:",
+    "text": "Lab3:\nLab 3: Keypad Scanner"
+  },
+  {
+    "objectID": "labs.html#lab-3",
+    "href": "labs.html#lab-3",
+    "title": "Labs",
+    "section": "Lab 3:",
+    "text": "Lab 3:\nLab 3: Keypad Scanner"
+  },
+  {
+    "objectID": "labs.html#lab-1",
+    "href": "labs.html#lab-1",
+    "title": "Labs",
+    "section": "",
+    "text": "Lab1: FPGA and MCU Setup and Testing"
+  },
+  {
+    "objectID": "labs.html#lab-2",
+    "href": "labs.html#lab-2",
+    "title": "Labs",
+    "section": "Lab 2:",
+    "text": "Lab 2:\nLab 2: Multiplexed 7-Segment Display"
+  },
+  {
+    "objectID": "labs.html#lab-4",
+    "href": "labs.html#lab-4",
+    "title": "Labs",
+    "section": "Lab 4:",
+    "text": "Lab 4:\nLab 4: Digital Audio"
+  },
+  {
+    "objectID": "labs.html#lab-5",
+    "href": "labs.html#lab-5",
+    "title": "Labs",
+    "section": "Lab 5:",
+    "text": "Lab 5:\nLab 5: Interrupts"
+  },
+  {
+    "objectID": "labs.html#lab-6",
+    "href": "labs.html#lab-6",
+    "title": "Labs",
+    "section": "Lab 6:",
+    "text": "Lab 6:\nLab 6: The Internet of Things and Serial Peripheral Interface"
+  },
+  {
+    "objectID": "labs.html#lab-7",
+    "href": "labs.html#lab-7",
+    "title": "Labs",
+    "section": "Lab 7:",
+    "text": "Lab 7:\nLab 7: The Advanced Encryption Standard"
+  },
+  {
+    "objectID": "labs.html#lab-1-fpga-and-mcu-setup-and-testing",
+    "href": "labs.html#lab-1-fpga-and-mcu-setup-and-testing",
+    "title": "Labs",
+    "section": "",
+    "text": "Lab1: FPGA and MCU Setup and Testing"
+  },
+  {
+    "objectID": "labs.html#lab-2-multiplexed-7-segment-display",
+    "href": "labs.html#lab-2-multiplexed-7-segment-display",
+    "title": "Labs",
+    "section": "Lab 2: Multiplexed 7-Segment Display",
+    "text": "Lab 2: Multiplexed 7-Segment Display\nLab 2: Multiplexed 7-Segment Display"
+  },
+  {
+    "objectID": "labs.html#lab-3-keypad-scanner",
+    "href": "labs.html#lab-3-keypad-scanner",
+    "title": "Labs",
+    "section": "Lab 3: Keypad Scanner",
+    "text": "Lab 3: Keypad Scanner\nLab 3: Keypad Scanner"
+  },
+  {
+    "objectID": "labs.html#lab-4-digital-audio",
+    "href": "labs.html#lab-4-digital-audio",
+    "title": "Labs",
+    "section": "Lab 4: Digital Audio",
+    "text": "Lab 4: Digital Audio\nLab 4: Digital Audio"
+  },
+  {
+    "objectID": "labs.html#lab-5-interrupts",
+    "href": "labs.html#lab-5-interrupts",
+    "title": "Labs",
+    "section": "Lab 5: Interrupts",
+    "text": "Lab 5: Interrupts\nLab 5: Interrupts"
+  },
+  {
+    "objectID": "labs.html#lab-6-the-internet-of-things-and-serial-peripheral-interface",
+    "href": "labs.html#lab-6-the-internet-of-things-and-serial-peripheral-interface",
+    "title": "Labs",
+    "section": "Lab 6: The Internet of Things and Serial Peripheral Interface",
+    "text": "Lab 6: The Internet of Things and Serial Peripheral Interface\nLab 6: The Internet of Things and Serial Peripheral Interface"
+  },
+  {
+    "objectID": "labs.html#lab-7-the-advanced-encryption-standard",
+    "href": "labs.html#lab-7-the-advanced-encryption-standard",
+    "title": "Labs",
+    "section": "Lab 7: The Advanced Encryption Standard",
+    "text": "Lab 7: The Advanced Encryption Standard\nLab 7: The Advanced Encryption Standard"
   }
 ]
