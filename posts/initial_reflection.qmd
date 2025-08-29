@@ -1,0 +1,11 @@
+---
+title: "Initial Reflections"
+description: "Overview of my background in digital design and goals in E155."
+author: "Eoin O'Connell"
+date: "8/29/25"
+categories:
+  - reflection
+  - labreport
+draft: false
+---
+
