@@ -19,5 +19,26 @@
     "title": "About",
     "section": "",
     "text": "About this site"
+  },
+  {
+    "objectID": "labs.html",
+    "href": "labs.html",
+    "title": "Labs",
+    "section": "",
+    "text": "Lab1: FPGA and MCU Setup and Testing\nLab 2: Multiplexed 7-Segment Display\nLab 3: Keypad Scanner\nLab 4: Digital Audio\nLab 5: Interrupts"
+  },
+  {
+    "objectID": "labs/lab2/lab2.html",
+    "href": "labs/lab2/lab2.html",
+    "title": "E155 Portfolio",
+    "section": "",
+    "text": "Lab 2: Multiplexed 7-Segment Display"
+  },
+  {
+    "objectID": "labs/lab3/lab3.html",
+    "href": "labs/lab3/lab3.html",
+    "title": "E155 Portfolio",
+    "section": "",
+    "text": "Lab 2: Multiplexed 7-Segment Display"
   }
 ]
