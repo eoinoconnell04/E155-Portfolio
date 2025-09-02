@@ -1,3 +1,75 @@
 ---
 title: "Lab 1: FPGA and MCU Setup and Testing"
 ---
+
+## Introduction
+
+This lab aimed to gain familiarity with the FPGA and MCU, and creating a simple seven segment display, as well as controlling some other LED functions.
+
+## Design and Testing Methodology
+
+## Technical Documentation:
+
+The code for my project can be found on my github page. [Lab1 Github Repository](https://github.com/eoinoconnell04/E155-Lab1)
+
+### Block Diagram
+
+![](images/block_diagram.png)
+
+<figcaption> Figure 1: Block Diagram of the Verilog design.</figcaption>
+
+The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module top includes three submodules: the high-speed oscillator block (HSOSC), the clock divider module (divider), and the seven segment display decoder (display).
+
+### Schematic
+
+![](images/schematic.png)
+
+<figcaption> Figure 2: Schematic of the Physical Circuit.</figcaption>
+
+Figure 2 shows the physical layout of the design. Note that led[3:0] have pins that were on the ribbon connector ports so that they could be passed to external LEDs on the breadboard due to a supply shortage of SMT diodes. Each led has a 1k\Omega current-limiting resistor to ensure the output current, ~2.6 mA, does not exceed the maximum current rating for the FPGA GPIO pins.
+
+## Results and Discussion
+
+I accomplished all of the perscribed tasks: the standalone LEDs and the seven segement display, all controlled by the 4 DIP switches. For the 2.4 Hz pulsing LED, my oscilloscope measured 2.402 Hz frequency, but there was quite a bit of noise on the rising and falling edge of the signal. I am not sure if this small error is a measure effect, or perhaps it is comming from the oscillator itself. Regarless, this shows that the clock divider circuit is working as intended.
+
+### Testbench Simulation
+
+The first testbench is to simulate the top level module. We can see the waveforms match the expected values. Note that for the simulation led[2] is floating because the oscillator is commented out because it cannot be simulated.
+Therefore, the expected output is led[1:0] appended in front of seg, giving us a 9 digit expected output.
+
+![](images/lab1_eo_tb.png)
+
+<figcaption> Figure 3: Top level module wave forms.</figcaption>
+
+Not only do we see the wave forms match, but we get a printout that all 16 possible permutations tests passed.
+
+![](images/lab1_eo_tb_tests.png)
+
+<figcaption> Figure 4: Top level module testbench output. </figcaption>
+
+
+Similarly for simulating the seven segment display module, we give the input switches s, and see the output seg matches the expected values.
+
+![](images/display_tb.png)
+
+<figcaption> Figure 5: Seven segment display module waveforms.</figcaption>
+
+
+Again, all 16 possible combinations of s matched the expectation.
+
+![](images/display_tb_tests.png)
+
+<figcaption> Figure 6: Seven segment display testbench output.</figcaption>
+
+
+Note, I did not write a testbench for the clock divider because it would simply be waiting millions of cycles for a single bit to change. However, I did connect an oscilloscope probe to the led on my breadboard and measure the period to be 2.4 Hz. 
+
+## Conclusion
+
+I worked on this lab for three consecutive days, totalling around 12 hours. This included around 3 hours to solder the board and get setup, a few hours working on the demos, before working on the project itself. Writting the verilog only took about 45 minutes, as the idioms are quite simple once you understand the clock divider logic.
+
+The FPGA succesfully controlled both the seven segment display as well as the 3 standalone LEDs. The first two LEDs perform the XOR and AND functions correctly, and the third LED blinks at 2.4 Hz as desired.
+
+## AI Prototype Summary
+
+> **_Prompt:_**  Write SystemVerilog HDL to leverage the internal high speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz. Take full advantage of SystemVerilog syntax, for example, using logic instead of wire and reg.
