@@ -57,7 +57,7 @@ Figure 2 shows the physical layout of the design. Note that led[3:0] have pins t
 To calculate the pull down resistors for the seven segement display, I used the datasheet of the display itself. This 
 I chose to use 1k $\Omega$ as it was over the minimum safe resitance value and still provided a very bright display. Using a larger resistor in this case will only make the circuit safer, it just could reduce the brightness (even to the point of the LED not illuminating).
 
-I was powering the LED with 3.3 V, and a max forward voltage of 2.5 V. That means that we need to dissipate up to 0.8 V through the resistor. Using V = I*R, and a max forward current of 20 mA, I get $R > 0.8 / (20 * 10^{-3}) = 40 \Omega$. This shows that my minimum resistance is 32 $\Omega$, which is why I picked 1k $\Omega$ which gives me a larger buffer. 
+I was powering the LED with 3.3 V, and the seven segment display has a typical forward voltage of 1.95 V. That means that we need to dissipate up to 1.35 V through the resistor. My starting point for choosing the resistance was to use 1k $\Omega$ resistors, just like the on board LEDs. Using V = I*R, I get $I = V/R = 1.35 / 1000 = 1.35$ mA. This is an acceptable current for the FPGA GPIO pins, so this is the resistor value that I choose.
 
 
 ## Results and Discussion
