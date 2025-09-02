@@ -26,6 +26,8 @@ The goal was to use the 4 input DIP switches to control the seven segment displa
 
 Both the top level module and the seven segment display module have automatic testbenches to check all possible permutations of input s[3:0], the 4 DIP switches. This simulates the output to make sure that the verilog has the expected functionality in all cases.
 
+Additionally, I created a testbench for a modified version of the divider module (divider_test_version), which instead of dividing a clk frequency by 20,000,000, it divides it by 20. This will check that the module works as expected, while still being managable (doesn't require simulating millions of clock cycles to check if a single bit changed).
+
 ### Visual test
 
 The seven segment display and LEDs are also most easily tested through the simple eye test. By going through all 16 combinations of the DIP switches, I can confirm that all hexadecimal digits are shown and distinct, and that the two LEDs that are a function of the swtiches work as correctly, and that the third LED blinks at around 2.4 Hz. Of course, this is a supplement to more rigorous tests, but this is quite effective at detecting bugs that could be common in both the SystemVerilog and the testvectors, because a lot of the cases were copied from one to the other.
@@ -50,7 +52,12 @@ The block diagram in Figure 1 demonstrates the overall architecture of the desig
 
 <figcaption> Figure 2: Schematic of the Physical Circuit.</figcaption>
 
-Figure 2 shows the physical layout of the design. Note that led[3:0] have pins that were on the ribbon connector ports so that they could be passed to external LEDs on the breadboard due to a supply shortage of SMT diodes. Each led has a 1k\Omega current-limiting resistor to ensure the output current, ~2.6 mA, does not exceed the maximum current rating for the FPGA GPIO pins.
+Figure 2 shows the physical layout of the design. Note that led[3:0] have pins that were on the ribbon connector ports so that they could be passed to external LEDs on the breadboard due to a supply shortage of SMT diodes. Each led has a 1k $\Omega$  current-limiting resistor to ensure the output current, ~2.6 mA, does not exceed the maximum current rating for the FPGA GPIO pins.
+
+<!--
+To calculate the pull down resistors for the seven segement display, I used the datasheet of the display itself.
+I chose to use 1k $\Omega$ as it fell within the maximum range.
+-->
 
 ## Results and Discussion
 
@@ -85,17 +92,76 @@ Again, all 16 possible combinations of s matched the expectation.
 
 <figcaption> Figure 6: Seven segment display testbench output.</figcaption>
 
+![](images/divider_test_version_tb.png)
 
-Note, I did not write a testbench for the clock divider because it would simply be waiting millions of cycles for a single bit to change. However, I did connect an oscilloscope probe to the led on my breadboard and measure the period to be 2.4 Hz. 
+<figcaption> Figure 7: Test version of clock divider module waveforms.</figcaption>
+
+Here we can see that the test verison spends 10 cycles at zero and 10 cycles at one. This divides the frequency by 20. This testbench is much easier to keep track of then trying to simulate the clock divider that counts to 10,000,000, as you would need to simulate so many more cycles just to see a change in the divided_clk signal.
+
+Here we can see that by counting to 10 for both the LED being on and off yeilds a total reduction in frequency by a factor of 20. Thus, by counting to 10,000,000, we get a frequency reduction by a factor of 20,000,000. That brings our 4.8 MHz clock to 2.4 Hz.
+
+![](images/divider_test_version_tb_tests.png)
+
+<figcaption> Figure 8: Test version of clock divider module testbench output.</figcaption>
+
+Just like how the waveforms for the divided_clk and expected signals match, we get confirmation that all tests passed by the testbench output.
+
+
 
 ## Conclusion
 
-I worked on this lab for three consecutive days, totalling around 12 hours. This included around 3 hours to solder the board and get setup, a few hours working on the demos, before working on the project itself. Writting the verilog only took about 45 minutes, as the idioms are quite simple once you understand the clock divider logic.
+I worked on this lab for three consecutive days, totalling around 15 hours. This included around 3 hours to solder the board and get setup, a few hours working on the demos, before working on the project itself. Writting the verilog only took about 45 minutes, as the idioms are quite simple once you understand the clock divider logic. I spent around 3 hours writing up the report and making diagrams.
 
 The FPGA succesfully controlled both the seven segment display as well as the 3 standalone LEDs. The first two LEDs perform the XOR and AND functions correctly, and the third LED blinks at 2.4 Hz as desired.
+
+The main assignment issue was simply a shortage of parts, which made certain functions more difficult to implement and test. For me, this meant that I had no on-board LEDs so I will have to solder and test these at a later date. For the assignment itself, I found it straightforward.
 
 ## AI Prototype Summary
 
 > **_Prompt:_**  Write SystemVerilog HDL to leverage the internal high speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz. Take full advantage of SystemVerilog syntax, for example, using logic instead of wire and reg.
 
 The code generated by ChatGPT base free model, which I believe to be GPT-5 but the website does not specify for my free acount. The file can be viewed [here](https://github.com/eoinoconnell04/E155-Lab1/blob/main/fpga/src/chat_gpt.sv) on my github.
+
+The first thing I was impressed by was that the AI seemed to get the clock oscillator correct. Here you can see the difference between my code and the AI output from the simple prompt.
+
+AI Clock Generation:
+
+```
+HSOSC #(
+        .CLKHF_DIV("0b00")   // 48 MHz (00), 24 MHz (01), 12 MHz (10), 6 MHz (11)
+    ) hf_osc_inst (
+        .CLKHF(clk_hf),
+        .CLKHFEN(1'b1),      // enable output
+        .CLKHFPU(1'b1)       // power up oscillator
+    );
+```
+
+My Clock generation (from lab1 source code):
+```
+HSOSC hf_osc (.CLKHFPU(1'b1), .CLKHFEN(1'b1), .CLKHF(clk));
+```
+
+Furthermore, the clock divider function was very simple and similar to what I would have wrote:
+```
+// Counter divider
+    logic [24:0] counter;   // enough bits for ~0.5s interval at 48 MHz
+    logic led_reg;
+
+    always_ff @(posedge clk_hf) begin
+        counter <= counter + 1;
+
+        // Toggle LED at ~2 Hz (0.5s high, 0.5s low)
+        if (counter == 24_000_000) begin
+            led_reg <= ~led_reg;
+            counter <= 0;
+        end
+    end
+```
+
+For the clock to get down to 2 Hz, my math is that n * 1/48,000,000 = 4 (2 times the clock frequency so that the duty cycle is 50% and the overall frequncy is 2 Hz). This means that it should count 12,000,000 cycles before flipping. The way the AI did it was that the overall frequency is 1 Hz because it spends 0.5s high and 0.5s low, which is 1 Hz as each cycle takes 1 s.
+
+Besides that minor misunderstanding, I was quite impressed by the AI output.
+
+When I synthesized the AI ouput in Radiant, it compiled and synthesized with no errors on the very first try. I think that with slightly more guidance on the clock divider instructions, then this would work as expected.
+
+I was using Cursor extensively over the summer at my internship at Tenstorrent, and I found it extremely powerful because it has context of your other files and you don't need to copy and paste back and forth from a website. I will try to get a student license, but the first half of this course is no AI allowed, so I will only be able to use it on the project.
