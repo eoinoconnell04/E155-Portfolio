@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -116,8 +145,32 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a>
+  <ul class="collapse">
+  <li><a href="#seven-segment-display" id="toc-seven-segment-display" class="nav-link" data-scroll-target="#seven-segment-display">Seven Segment display</a></li>
+  <li><a href="#clock-divider" id="toc-clock-divider" class="nav-link" data-scroll-target="#clock-divider">Clock divider</a></li>
+  <li><a href="#top-level-module" id="toc-top-level-module" class="nav-link" data-scroll-target="#top-level-module">Top Level module</a></li>
+  <li><a href="#eye-test" id="toc-eye-test" class="nav-link" data-scroll-target="#eye-test">Eye test</a></li>
+  </ul></li>
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation:</a>
+  <ul class="collapse">
+  <li><a href="#block-diagram" id="toc-block-diagram" class="nav-link" data-scroll-target="#block-diagram">Block Diagram</a></li>
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  </ul></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a>
+  <ul class="collapse">
+  <li><a href="#testbench-simulation" id="toc-testbench-simulation" class="nav-link" data-scroll-target="#testbench-simulation">Testbench Simulation</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -141,8 +194,120 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This lab aimed to gain familiarity with clock multiplexing and PNP transistors, through driving 2 seven segment displays with a single set of GPIO pins that rapidly switches back and forth at the same frequency as the power driving both displays. This gives the illusion that both are on simultaenously because our eyes cannot detect how fast the displays are switching on and off.</p>
+</section>
+<section id="design-and-testing-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
+<p>This challenge of this lab was using a single seven segment display module, and a corresponding single set of 7 GPIO pins to control two different seven segment display panels with different numbers. The trick is to rapidly switch the signals on outputed by the pins, and at the same frequency change which display gets power. That gives the illusion that both segements are continuously illuminated, but in reality it is only ever one at a time. This requires some testing to make sure that all the parts work together as intended.</p>
+<section id="seven-segment-display" class="level3">
+<h3 class="anchored" data-anchor-id="seven-segment-display">Seven Segment display</h3>
+<p>The display module takes a 4 bit signal and decodes it to control the seven segment display, ensuring that all digits were unique (ex: 6 and b must be distinguishable). The first step was to map each hexadeciaml digit to the seven segment display and determine which panels should be on. Then, this was implemented using a case statement in SystemVerilog which turned the truth table into hardware. This module was already tested in lab 1, and comfirmed with a testbench, so we can be sure that this module works as expected.</p>
+</section>
+<section id="clock-divider" class="level3">
+<h3 class="anchored" data-anchor-id="clock-divider">Clock divider</h3>
+<p>Likewise, the clock divider was used in lab 1 as well. The parameter that changes the TOGGLE_COUNT was modified to output a faster frequency than lab 1 so that the human eye cannot detect flickering, but it is otherwise unchagned. Again this has it’s own testbench to ensure proper functionality, but we can also use this knowing that it works correctly.</p>
+</section>
+<section id="top-level-module" class="level3">
+<h3 class="anchored" data-anchor-id="top-level-module">Top Level module</h3>
+<p>Simulating the top level module was probably the most challenging aspect of all of lab 2. I changed the TOGGLE_COUNT parameter to flip every cycle (halving the clock frequency), so that the wave forms were more managable. Next, the challenge was getting testvector coverage for all <span class="math inline">\(2^8\)</span> combinations of input switches, and also ensuring that the control signals that turn each one on or off were lined up correctly. To do this, I wrote a python script that generated these test vectors so they didn’t have to be hand written. This made it very easy to modify the testvectors as I identified bugs and changed the functionality of the module (it took me a few iterations to get the top level module outputs correct).</p>
+<p>This module also tests the mux and adder logic, and this is built into the testvectors.</p>
+</section>
+<section id="eye-test" class="level3">
+<h3 class="anchored" data-anchor-id="eye-test">Eye test</h3>
+<p>For this type of project, the simple eye test is very important. Just because the verilog works as expected, we need to make sure that the chosen frequency for switching digits is fast enough to not notice flickering, but slow enough to not see any digits bleeding into each other.</p>
+</section>
+</section>
+<section id="technical-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="technical-documentation">Technical Documentation:</h2>
+<p>The code for my project can be found on my github page. <a href="https://github.com/eoinoconnell04/E155-Lab2">Lab2 Github Repository</a></p>
+<section id="block-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="block-diagram">Block Diagram</h3>
+<p><img src="images/block_diagram.png" class="img-fluid"></p>
+<figcaption>
+Figure 1: Block Diagram of the Verilog design.
+</figcaption>
+<p>The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module top includes three submodules: the high-speed oscillator block (HSOSC), the clock divider module (divider), and the seven segment display decoder (display).</p>
+<p>It also includes a mux to switch between the two DIP switch input signals, an adder to sum together the input signals, and an inverter to create a set of opposing display control signals (when one is one the other is off and vice versa).</p>
+</section>
+<section id="schematic" class="level3">
+<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<p><img src="images/schematic.png" class="img-fluid"></p>
+<figcaption>
+Figure 2: Schematic of the Physical Circuit.
+</figcaption>
+<p>Figure 2 shows the physical layout of the design. We have 5 leds on the breadboard controlled by led[4:0], and these have current limiting resistors. The green LEDs that I am using have a voltage drop around 2.2 volts, so the current through the resistor is <span class="math inline">\(V/R = (3.3 - 2) / 330 = 3.9\)</span> mA. This is an acceptable current for the FGPA pins. I used 1k <span class="math inline">\(\Omega\)</span> resistors in lab1 and the LEDs were quite dim so I wanted to to have a brighter LED that was still safe for the FGPA in lab 2.</p>
+<p>Additionally, I need resistors for the 7 segment display. In lab 1 I had current limiting resistors, but they were wired incorrectly and were not functioning as intended. Here I fixed that issue, but the calculation is the same from lab 1. The seven segment display has a typical forward voltage of 1.95 V (from datasheet), and given the 3.3 V input, we get <span class="math inline">\(I = V/R = 1.35 / 330 = 4.0\)</span> mA. This is an acceptable current for the FPGA GPIO pins, and the seven segment display has a bright clear ouptut, so this is what was used.</p>
+<p>Finally, I need to calculate the resistor for the gate of the PNP transistor. From the data sheet, the Base−Emitter Saturation Voltage has a typical value of <span class="math inline">\(0.9\)</span> V. That means the base is sitting at <span class="math inline">\(3.3-0.9 = 2.4\)</span> V. My initial choice was a 2.2 k <span class="math inline">\(\Omega\)</span> resistor, which gives <span class="math inline">\(2.4/2200 = 1.09\)</span> mA through the FPGA pin. This is a perfectly acceptable FPGA current, and the transistor is operating correctly so it is used for this lab.</p>
+</section>
+</section>
+<section id="results-and-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="results-and-discussion">Results and Discussion</h2>
+<p>I accomplished all of the perscribed tasks: the 5 standalone LEDs display the sum of the two hexadecimal digits as expected, and the two digit seven segement display shows both digits with no flickering, with all digits at an even brightness. This is controlled by the 4 dip switches on the board, as well as a secondary set of dip switches on the breadboard.</p>
+<section id="testbench-simulation" class="level3">
+<h3 class="anchored" data-anchor-id="testbench-simulation">Testbench Simulation</h3>
+<p>The first testbench is to simulate the top level module. We can see the waveforms match the expected values. For this test, I modified the parameter TOGGLE_COUNT for the divider to make the divided clock only half the frequency of the regular clock. This allows for a much more managable testbench as we do not need to wait thousands of cycles for the divided_clk to flip.</p>
+<p>To generate the long test vectors file for the top level module to have complete coverage of all input combinations, I wrote a short python script <code>generate_lab2_eo_testvectors.py</code> which loops through all input combinations and appends one cycle with the first digit illuminated, and a second cycle with the second digit, before moving to the next switch combination. This made it very easy to modify the test vectors as I developed the module itself, instead of working on a very large complex testvector file directly.</p>
+<p><img src="images/lab2_eo_tb.png" class="img-fluid"></p>
+<figcaption>
+Figure 3: Top level module wave forms.
+</figcaption>
+<p>In figure 3, we see that the expected and simulated waveforms match. Of course, this is only the first couple cycles, but this continuous for all 512 tests. The 512 tests covers all <span class="math inline">\(2^8\)</span> combinations of switches twice, as it includes 2 cycles per combination to allow the mux to select both inputs and flash the number on the respective panel.</p>
+<p><img src="images/lab2_eo_tb_tests.png" class="img-fluid"></p>
+<figcaption>
+Figure 4: Top level module testbench output.
+</figcaption>
+<p>Figure 4 output also confirms that the 512 tests matched the expectation, including the LEDs, the seven segment display, and the display selection signals.</p>
+<p><img src="images/display_tb.png" class="img-fluid"></p>
+<figcaption>
+Figure 5: Seven segment display module waveforms.
+</figcaption>
+<p>Here, we are using the exact same unmodified display module from lab1, and we have the same test bench to confirm it’s functionality. We test for all combinations of s, and ensure that the 7 bit binary output is as expected.</p>
+<p><img src="images/display_tb_tests.png" class="img-fluid"></p>
+<figcaption>
+Figure 6: Seven segment display testbench output.
+</figcaption>
+<p>Figure 6 shows that all 16 possible combinations of s matched the expectation.</p>
+<p><img src="images/divider_test_version_tb.png" class="img-fluid"></p>
+<figcaption>
+Figure 7: Test version of clock divider module waveforms.
+</figcaption>
+<p>Just like the seven segment display decoder, we are reusing the clock divider as well.</p>
+<p>Here we can see that the test verison spends 10 cycles at zero and 10 cycles at one. This divides the frequency by 20. This testbench is much easier to keep track of then trying to simulate the clock divider counting thousands of cycles, yet still provides confirmation that it is working as intended.</p>
+<p><img src="images/divider_test_version_tb_tests.png" class="img-fluid"></p>
+<figcaption>
+Figure 8: Test version of clock divider module testbench output.
+</figcaption>
+<p>Figure 8 gives confirmation that the module outputs match the expected values for all tests.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>I found lab 2 significantly easier than lab 1, because I had a gained familiarity with the software and board, and had already assembled my parts. The verilog itself was also very quick, as I was able to reuse my display and divider modules from lab 1. Therefore, I had the verilog and testbenches written in around 2 hours.</p>
+<p>It took around 2 more hours to assemble my breadboard, and 2 hours debugging some subtle issues. One such issue was that my verilog assumed a active high reset, wheras the board button is active low. That caused the digit to be stuck on one of them and not oscillate back and forth.</p>
+<p>Overall, I worked on this lab for around 12 hours including the writeup and diagrams.</p>
+<p>The FPGA succesfully controlled both digits on the seven segment display with no noticable flickering, and the 5 led lights that display the sum. The lab was very succesful and I enjoyed working on it.</p>
+<p>I still had issues getting the FPGA programmer to help, but Javier gave me a useful tip which seems to be helping. I might still try out the alternative programmer that has been suggested.</p>
+</section>
+<section id="ai-prototype-summary" class="level2">
+<h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
+<blockquote class="blockquote">
+<p><strong><em>Prompt 1:</em></strong> Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits.</p>
+</blockquote>
+<p>I used my ChatGPT free account to create this, and the file is <a href="https://github.com/eoinoconnell04/E155-Lab2/blob/main/fpga/src/chat1.sv">here</a> on my github.</p>
+<p>I opened up the verilog in Radiant, it synthesized without any issues. The first thing I noticed when looking at the Netlist analyzer is that there are 2 sets of seven segment display outputs. I think that the wording of the prompt suggests this, and that if I wanted to run this on my board (which doesn’t have enough GPIO pins to allow 14 pins for the seven segment display) I could easily ask Chat to fix this for me. Essentially, I think that it was correct for what it was trying to do.</p>
+<p>Looking at the SystemVerilog itself, I noticed that while the AI included pleanty inline comments explaining what each line does, the over style was very poor, with no modules. I think that by modifying the prompt to tell it to use a modular design it would do well on this.</p>
+<p>Next I tried the second prompt given in the lab manual.</p>
+<blockquote class="blockquote">
+<p><strong><em>Prompt 2:</em></strong> Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits. Use the seven segment decoder and oscillator provided in the attached files.</p>
+</blockquote>
+<p>For some reason, despite providing the files as context, the LLM did not use the correct port names when instantiating the modules. For example for the divider it used <code>clk_in</code> and <code>clk_out</code> instead of <code>clk</code> and <code>divided_clk</code> which my module uses. Likewise it used <code>in</code> and <code>out</code> for the seven segment display instead of <code>s</code> and <code>seg</code>. It also got the parameter name <code>TOGGLE_COUNT</code> wrong and called it <code>n</code>. Somehow it new what the inputs, outputs, and parameters were, but somehow did not copy over the names correctly.</p>
+<p>I performed those manual changes, the design synthesized correctly. It got the oscillator correct, and the rest of the SystemVerilog code seems reasonable (but also not modular like Prompt 1 response).</p>
+<p>I think that a lot of these errors would be better with a different model and IDE such as Cursor instead of providing the files to chat gpt. During my internship I found that Cursor + Claude Sonnet worked very well and didn’t make these kinds of mistakes, but I do not have access to these anymore. For things like writting modular code, style, and comments, something like a Cursor rules file, or a thing that you add to every prompt/conversation with specific instructions would help get results that are closer to what the user desires.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
