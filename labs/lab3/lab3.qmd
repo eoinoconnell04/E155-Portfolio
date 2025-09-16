@@ -63,6 +63,34 @@ Additionally, I need to calculate the resistor for the gate of the PNP transisto
 
 Finally, I needed pull-down resistors to make sure that the horizontal input pins to the FPGA are not floating when the button is not pressed. I was using pull-down resistors instead of pull-up resistors because my switches were wired in a way to be active high instead of active low. The resistor I used was 10 k $\Omega$. This worked as intended so the value was kept. This is not a board safety resistor like the current limiting resistors, we would only need to change it if it was providing floating behavior that was not working as intended.
 
+### FSM Diagrams and Tables
+
+![](images/jitter_fsm.png)
+
+Now we have the state transistion and output tables:
+
+![](images/jitter_fsm_table.png)
+
+<figcaption> State transistion and output table for jitter FSM. </figcaption>
+
+![](images/counter_fsm_table.png)
+
+<figcaption> State transistion and output table for counter FSM. </figcaption>
+
+![](images/clk_phase_shifter_fsm_table.png)
+
+<figcaption> State transistion and output table for clock phase shifter FSM. </figcaption>
+
+
+
+
+![][](images/sync_fsm.png)
+
+Here we see the internal flops inside the synchcronizer and store_keypresses modules. These look very similar in design but serve completely different functions. One is a synchcronizer and one is a shift register.
+
+
+
+
 ## Results and Discussion
 
 I accomplished all of the perscribed tasks: The keypad correctly inputs to the two digit seven segement display with no flickering, no switch bouce, and with all digits at an even brightness. The board remains functional when multiple inputs are pressed, and when a button is held and other buttons are pressed before it is released.
@@ -73,7 +101,7 @@ The first testbench is to simulate the top level module. We can see the waveform
 
 To generate the long test vectors file for the top level module to have complete coverage of all input combinations, I wrote a short python script `generate_lab2_eo_testvectors.py` which loops through all input combinations and appends one cycle with the first digit illuminated, and a second cycle with the second digit, before moving to the next switch combination. This made it very easy to modify the test vectors as I developed the module itself, instead of working on a very large complex testvector file directly.
 
-![](images/lab3_eo_tb.png)
+![](images/lab3_eo_waveforms.png)
 
 <figcaption> Figure 3: Top level module wave forms.</figcaption>
 
@@ -81,7 +109,7 @@ To generate the long test vectors file for the top level module to have complete
 In figure 3, we see that the expected and simulated waveforms match. Of course, this is only the first couple cycles, but this continuous for all 512 tests. The 512 tests covers all $2^8$ combinations of switches twice, as it includes 2 cycles per combination to allow the mux to select both inputs and flash the number on the respective panel.
 -->
 
-![](images/lab3_eo_tb_tests.png)
+![](images/lab3_eo_tests.png)
 
 <figcaption> Figure 4: Top level module testbench output. </figcaption>
 
@@ -141,20 +169,44 @@ The most difficult part was figuring out why my keypad was not working when I bu
 
 ## AI Prototype Summary
 
-> **_Prompt 1:_**  Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits.
+> **_Prompt 1:_**  Whole Lab (Monolithic)
+Write synthesizable SystemVerilog to scan a 4x4 matrix keypad and display the last two hex keys pressed on a dual 7‑segment display. Implement:
+A clock divider that derives a scan clock on the order of 100–200 Hz from the internal oscillator.
+A keypad scanning controller that iterates one active‑low column at a time and samples active‑low rows, registering at most one key per press (debounce‑by‑design), ignoring additional presses while any key is held, and allowing a new registration only after release.
+A top level that updates two hex digits (older and most recent) when a new key is registered and drives a time‑multiplexed two‑digit 7‑segment display without visible flicker and with balanced brightness.
+Use idiomatic SystemVerilog (e.g., logic, always_ff, enumerated states for FSMs). Provide clean module boundaries and keep all state synchronous. Include brief comments explaining the design choices.
 
-I used my ChatGPT free account to create this, and the file is [here](https://github.com/eoinoconnell04/E155-Lab2/blob/main/fpga/src/chat1.sv) on my github.
+I used my ChatGPT free account to create this, and all the files are contained in [here](https://github.com/eoinoconnell04/E155-Lab3/blob/main/fpga/src/ai_prototype) on my github.
 
-I opened up the verilog in Radiant, it synthesized without any issues. The first thing I noticed when looking at the Netlist analyzer is that there are 2 sets of seven segment display outputs. I think that the wording of the prompt suggests this, and that if I wanted to run this on my board (which doesn't have enough GPIO pins to allow 14 pins for the seven segment display) I could easily ask Chat to fix this for me. Essentially, I think that it was correct for what it was trying to do.
+The monolithinc approach synthesized succesfully in radiant which really surprised me. The design actually broke it up into 3 modules and good documentation for each. I think that the much longer prompt with more detailed instruction is why this worked. Previous prompts were sometimes more like one sentence and thus the results were less accurate. This shows the importance of prompt engineering.
 
-Looking at the SystemVerilog itself, I noticed that while the AI included pleanty inline comments explaining what each line does, the over style was very poor, with no modules. I think that by modifying the prompt to tell it to use a modular design it would do well on this.
+The part B of this was broken into multiple prompts, one for each module:
 
-Next I tried the second prompt given in the lab manual.
-
-> **_Prompt 2:_**  Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits. Use the seven segment decoder and oscillator provided in the attached files.
-
+> **_Prompt 2:_**  LLM Prompt 1: One‑shot Registration (Debounce‑by‑design)
+Overall Goal: Write SystemVerilog to scan a 4x4 matrix keypad and display the last two hex keys pressed on a dual 7 segment display.
+Current Goal: Write a synthesizable SystemVerilog module that produces a one‑shot registration signal for the keypad system. Behavior:
+When a key press is first detected, capture the current key code and assert a single‑cycle “new key” pulse.
+While any key remains pressed, do not accept additional keys.
+Only after keys are released should a subsequent press be recognized.
+This should handle debouncing of the keys.
+Implement as a small synchronous FSM with enumerated states and glitch‑free outputs. Keep names and interfaces reasonable; do not assume any hidden modules beyond what you define here.
 For some reason, despite providing the files as context, the LLM did not use the correct port names when instantiating the modules. For example for the divider it used `clk_in` and `clk_out` instead of `clk` and `divided_clk` which my module uses. Likewise it used `in` and `out` for the seven segment display instead of `s` and `seg`. It also got the parameter name `TOGGLE_COUNT` wrong and called it `n`. Somehow it new what the inputs, outputs, and parameters were, but somehow did not copy over the names correctly.
 
+> **_Prompt 3:_** 
+Target device: Lattice iCE40 UP5K FPGA.
+Write a synthesizable SystemVerilog module that cycles through keypad columns (active‑low, one at a time) and samples rows (active‑low) to detect a single key at a time. Behavior:
+Iterate columns at a suitable scan rate derived from the divided clock and sample rows.
+When a key is detected, report a stable key code consistent with a standard 4x4 keypad layout and maintain it while the key remains pressed.
+Provide a boolean signal indicating whether any key is currently pressed.
+Use clean state encoding and synchronous logic; avoid combinational feedback and latches.
 I performed those manual changes, the design synthesized correctly. It got the oscillator correct, and the rest of the SystemVerilog code seems reasonable (but also not modular like Prompt 1 response).
 
-I think that a lot of these errors would be better with a different model and IDE such as Cursor instead of providing the files to chat gpt. During my internship I found that Cursor + Claude Sonnet worked very well and didn't make these kinds of mistakes, but I do not have access to these anymore. For things like writting modular code, style, and comments, something like a Cursor rules file, or a thing that you add to every prompt/conversation with specific instructions would help get results that are closer to what the user desires.
+> **_Prompt 3:_** Integrate and Display
+Target device: Lattice iCE40 UP5K FPGA with internal oscillator as the root clock source.
+Write a top‑level SystemVerilog module that instantiates the scanner and one‑shot modules, shifts the last two keys (older ← most recent; most recent ← new), and drives a multiplexed two‑digit seven‑segment display. Requirements:
+Update the displayed digits only when a new key is registered.
+Ensure equal apparent brightness and no visible flicker.
+Keep all logic synthesizable and synchronous; use idiomatic SystemVerilog constructs.
+Provide any small clock‑enable or divider logic you need. You can also assume that a sevenSegment module exists that takes a 4 bit input and outputs the 7 segments.
+
+This design failed during the place and route, and crashed out of synthesis. This is because it got the module name wrong for the high speed oscillator. Instead of using `HSOSC`, it used `SB_HFOSC`. Despite this, on the surface level the modules seemed partitioned well. When I fixed this error, I got some more errors, including that there was an unknown module `sevenSegment` instead of `display` which is in the file I gave as context. After fixing this, more similar errors kept popping up so I stopped. Similar issue to the name issue I had for AI prototype in lab2.
