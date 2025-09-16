@@ -86,7 +86,7 @@ Note, for the count FSM the output is the same as the state itself, so a separat
 
 
 
-![][](images/sync_fsm.png)
+![](images/sync_fsm.png)
 
 Here we see the internal flops inside the synchcronizer and store_keypresses modules. These look very similar in design but serve completely different functions. One is a synchcronizer and one is a shift register.
 
