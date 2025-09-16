@@ -77,6 +77,8 @@ Now we have the state transistion and output tables:
 
 <figcaption> State transistion and output table for counter FSM. </figcaption>
 
+Note, for the count FSM the output is the same as the state itself, so a separate column is not shown.
+
 ![](images/clk_phase_shifter_fsm_table.png)
 
 <figcaption> State transistion and output table for clock phase shifter FSM. </figcaption>
@@ -169,7 +171,7 @@ The most difficult part was figuring out why my keypad was not working when I bu
 
 ## AI Prototype Summary
 
-> **_Prompt 1:_**  Whole Lab (Monolithic)
+> **_Prompt A 1:_**  Whole Lab (Monolithic)
 Write synthesizable SystemVerilog to scan a 4x4 matrix keypad and display the last two hex keys pressed on a dual 7‑segment display. Implement:
 A clock divider that derives a scan clock on the order of 100–200 Hz from the internal oscillator.
 A keypad scanning controller that iterates one active‑low column at a time and samples active‑low rows, registering at most one key per press (debounce‑by‑design), ignoring additional presses while any key is held, and allowing a new registration only after release.
@@ -182,7 +184,7 @@ The monolithinc approach synthesized succesfully in radiant which really surpris
 
 The part B of this was broken into multiple prompts, one for each module:
 
-> **_Prompt 2:_**  LLM Prompt 1: One‑shot Registration (Debounce‑by‑design)
+> **_Prompt B 1:_**  LLM Prompt 1: One‑shot Registration (Debounce‑by‑design)
 Overall Goal: Write SystemVerilog to scan a 4x4 matrix keypad and display the last two hex keys pressed on a dual 7 segment display.
 Current Goal: Write a synthesizable SystemVerilog module that produces a one‑shot registration signal for the keypad system. Behavior:
 When a key press is first detected, capture the current key code and assert a single‑cycle “new key” pulse.
@@ -192,7 +194,7 @@ This should handle debouncing of the keys.
 Implement as a small synchronous FSM with enumerated states and glitch‑free outputs. Keep names and interfaces reasonable; do not assume any hidden modules beyond what you define here.
 For some reason, despite providing the files as context, the LLM did not use the correct port names when instantiating the modules. For example for the divider it used `clk_in` and `clk_out` instead of `clk` and `divided_clk` which my module uses. Likewise it used `in` and `out` for the seven segment display instead of `s` and `seg`. It also got the parameter name `TOGGLE_COUNT` wrong and called it `n`. Somehow it new what the inputs, outputs, and parameters were, but somehow did not copy over the names correctly.
 
-> **_Prompt 3:_** 
+> **_Prompt B 2:_** 
 Target device: Lattice iCE40 UP5K FPGA.
 Write a synthesizable SystemVerilog module that cycles through keypad columns (active‑low, one at a time) and samples rows (active‑low) to detect a single key at a time. Behavior:
 Iterate columns at a suitable scan rate derived from the divided clock and sample rows.
@@ -201,7 +203,7 @@ Provide a boolean signal indicating whether any key is currently pressed.
 Use clean state encoding and synchronous logic; avoid combinational feedback and latches.
 I performed those manual changes, the design synthesized correctly. It got the oscillator correct, and the rest of the SystemVerilog code seems reasonable (but also not modular like Prompt 1 response).
 
-> **_Prompt 3:_** Integrate and Display
+> **_Prompt B 3:_** Integrate and Display
 Target device: Lattice iCE40 UP5K FPGA with internal oscillator as the root clock source.
 Write a top‑level SystemVerilog module that instantiates the scanner and one‑shot modules, shifts the last two keys (older ← most recent; most recent ← new), and drives a multiplexed two‑digit seven‑segment display. Requirements:
 Update the displayed digits only when a new key is registered.
