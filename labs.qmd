@@ -2,6 +2,8 @@
 title: "Labs"
 ---
 
+# Completed Labs:
+
 ## Lab 1: FPGA and MCU Setup and Testing
 
 [Lab1: FPGA and MCU Setup and Testing](labs/lab1/lab1.qmd)
@@ -13,6 +15,8 @@ title: "Labs"
 ## Lab 3: Keypad Scanner
 
 [Lab 3: Keypad Scanner](labs/lab3/lab3.qmd)
+
+# Future Labs:
 
 ## Lab 4: Digital Audio
 

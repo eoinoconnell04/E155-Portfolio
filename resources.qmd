@@ -2,4 +2,4 @@
 title: "Resources"
 ---
 
-[Course Webpage](https://hmc-e155.github.io/)
+Here is the class webpage with infomration about the class, labs, and project: [Course Webpage](https://hmc-e155.github.io/)
