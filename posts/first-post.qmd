@@ -1,6 +1,6 @@
 ---
-title: "Hello Quarto"
-description: "Welcome to my Quarto portfolio"
+title: "E155 Kickoff"
+description: "Welcome to my E155 portfolio"
 author: "Eoin O'Connell"
 date: "8/28/25"
 categories:
@@ -8,3 +8,5 @@ categories:
   - labreport
 draft: false
 ---
+
+Welcome to my E155 portfolio!
