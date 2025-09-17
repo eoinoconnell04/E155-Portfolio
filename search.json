@@ -4,7 +4,7 @@
     "href": "blog.html",
     "title": "E155 Blog",
     "section": "",
-    "text": "Initial Reflections\n\n\nOverview of my background in digital design and goals in E155.\n\n\n\n\n\nAug 29, 2025\n\n\nEoin O’Connell\n\n\n\n\n\n\n\n\n\n\n\n\nHello Quarto\n\n\nWelcome to my Quarto portfolio\n\n\n\n\n\nAug 28, 2025\n\n\nEoin O’Connell\n\n\n\n\n\nNo matching items"
+    "text": "Initial Reflections\n\n\nOverview of my background in digital design and goals in E155.\n\n\n\n\n\nAug 29, 2025\n\n\nEoin O’Connell\n\n\n\n\n\n\n\n\n\n\n\n\nE155 Kickoff\n\n\nWelcome to my E155 portfolio\n\n\n\n\n\nAug 28, 2025\n\n\nEoin O’Connell\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
@@ -18,7 +18,7 @@
     "href": "labs.html",
     "title": "Labs",
     "section": "",
-    "text": "Lab1: FPGA and MCU Setup and Testing"
+    "text": "Lab1: FPGA and MCU Setup and Testing\n\n\n\nLab 2: Multiplexed 7-Segment Display\n\n\n\nLab 3: Keypad Scanner"
   },
   {
     "objectID": "labs.html#lab-1-fpga-and-mcu-setup-and-testing",
@@ -31,15 +31,15 @@
     "objectID": "labs.html#lab-2-multiplexed-7-segment-display",
     "href": "labs.html#lab-2-multiplexed-7-segment-display",
     "title": "Labs",
-    "section": "Lab 2: Multiplexed 7-Segment Display",
-    "text": "Lab 2: Multiplexed 7-Segment Display\nLab 2: Multiplexed 7-Segment Display"
+    "section": "",
+    "text": "Lab 2: Multiplexed 7-Segment Display"
   },
   {
     "objectID": "labs.html#lab-3-keypad-scanner",
     "href": "labs.html#lab-3-keypad-scanner",
     "title": "Labs",
-    "section": "Lab 3: Keypad Scanner",
-    "text": "Lab 3: Keypad Scanner\nLab 3: Keypad Scanner"
+    "section": "",
+    "text": "Lab 3: Keypad Scanner"
   },
   {
     "objectID": "labs.html#lab-4-digital-audio",
@@ -224,6 +224,13 @@
     "text": "AI Prototype Summary\n\nPrompt 1: Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits.\n\nI used my ChatGPT free account to create this, and the file is here on my github.\nI opened up the verilog in Radiant, it synthesized without any issues. The first thing I noticed when looking at the Netlist analyzer is that there are 2 sets of seven segment display outputs. I think that the wording of the prompt suggests this, and that if I wanted to run this on my board (which doesn’t have enough GPIO pins to allow 14 pins for the seven segment display) I could easily ask Chat to fix this for me. Essentially, I think that it was correct for what it was trying to do.\nLooking at the SystemVerilog itself, I noticed that while the AI included pleanty inline comments explaining what each line does, the over style was very poor, with no modules. I think that by modifying the prompt to tell it to use a modular design it would do well on this.\nNext I tried the second prompt given in the lab manual.\n\nPrompt 2: Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits. Use the seven segment decoder and oscillator provided in the attached files.\n\nFor some reason, despite providing the files as context, the LLM did not use the correct port names when instantiating the modules. For example for the divider it used clk_in and clk_out instead of clk and divided_clk which my module uses. Likewise it used in and out for the seven segment display instead of s and seg. It also got the parameter name TOGGLE_COUNT wrong and called it n. Somehow it new what the inputs, outputs, and parameters were, but somehow did not copy over the names correctly.\nI performed those manual changes, the design synthesized correctly. It got the oscillator correct, and the rest of the SystemVerilog code seems reasonable (but also not modular like Prompt 1 response).\nI think that a lot of these errors would be better with a different model and IDE such as Cursor instead of providing the files to chat gpt. During my internship I found that Cursor + Claude Sonnet worked very well and didn’t make these kinds of mistakes, but I do not have access to these anymore. For things like writting modular code, style, and comments, something like a Cursor rules file, or a thing that you add to every prompt/conversation with specific instructions would help get results that are closer to what the user desires."
   },
   {
+    "objectID": "posts/first-post.html",
+    "href": "posts/first-post.html",
+    "title": "E155 Kickoff",
+    "section": "",
+    "text": "Welcome to my E155 portfolio!"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "E155 Portfolio",
@@ -235,6 +242,6 @@
     "href": "resources.html",
     "title": "Resources",
     "section": "",
-    "text": "Course Webpage"
+    "text": "Here is the class webpage with infomration about the class, labs, and project: Course Webpage"
   }
 ]
