@@ -16,11 +16,11 @@ title: "Labs"
 
 [Lab 3: Keypad Scanner](labs/lab3/lab3.qmd)
 
-# Future Labs:
-
 ## Lab 4: Digital Audio
 
 [Lab 4: Digital Audio](labs/lab4/lab4.qmd)
+
+# Future Labs:
 
 ## Lab 5: Interrupts
 
