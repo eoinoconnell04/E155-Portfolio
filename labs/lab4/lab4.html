@@ -156,7 +156,9 @@ window.Quarto = {
   <li><a href="#segger-testing" id="toc-segger-testing" class="nav-link" data-scroll-target="#segger-testing">Segger Testing</a></li>
   <li><a href="#osilloscope-testing" id="toc-osilloscope-testing" class="nav-link" data-scroll-target="#osilloscope-testing">Osilloscope Testing</a></li>
   <li><a href="#ear-test" id="toc-ear-test" class="nav-link" data-scroll-target="#ear-test">Ear test</a></li>
+  <li><a href="#timer-configuration" id="toc-timer-configuration" class="nav-link" data-scroll-target="#timer-configuration">Timer Configuration</a></li>
   <li><a href="#calculations" id="toc-calculations" class="nav-link" data-scroll-target="#calculations">Calculations</a></li>
+  <li><a href="#choosing-auto-reload-register-values" id="toc-choosing-auto-reload-register-values" class="nav-link" data-scroll-target="#choosing-auto-reload-register-values">Choosing Auto-Reload Register Values</a></li>
   </ul></li>
   <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation:</a>
   <ul class="collapse">
@@ -204,7 +206,7 @@ window.Quarto = {
 <p>Once I am able to get the GPIO pins to toggle at specified frequencies, the final testing to confirm correct functionality is relatively simple.</p>
 <section id="segger-testing" class="level3">
 <h3 class="anchored" data-anchor-id="segger-testing">Segger Testing</h3>
-<p>Before ever flashing the MCU or building a circuit, I tested my code in Segger Embedded Studio, loaded with drivers and backages for my STM32L432KC MCU. This allowed me to test that my code was working as intended.</p>
+<p>Before ever flashing the MCU or building a circuit, I tested my code in Segger Embedded Studio, loaded with drivers and backages for my STM32L432KC MCU. This allowed me to test that my code was working as intended. I looked into the relevant registers to ensure that bits were getting updated, specfically that the counters were incrementing and resetting and the desired points.</p>
 </section>
 <section id="osilloscope-testing" class="level3">
 <h3 class="anchored" data-anchor-id="osilloscope-testing">Osilloscope Testing</h3>
@@ -213,6 +215,97 @@ window.Quarto = {
 <section id="ear-test" class="level3">
 <h3 class="anchored" data-anchor-id="ear-test">Ear test</h3>
 <p>Of course, for this type of lab the ultimate test is to make sure that the songs, Fur Elise and Happy Birthday, sound to our ears as they expect. Our ears are very good at detecting if the intervals between notes are not correct, or if the rythem is not steady. I don’t have perfect pitch so I cannot confirm that it is in the correct key, but I can tell if everything is correct relative to each other.</p>
+</section>
+<section id="timer-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="timer-configuration">Timer Configuration</h3>
+<p>The first thing that the main function does is configure flash and the system clock to use the PLL at 80 Mhz. I utilized header files and drivers that were provided as part of this lab.</p>
+<pre><code>configureFlash();
+configureClock();</code></pre>
+<p>Next, I configured the GPIO to connect my song to an external pin to be able to be played through the speaker.</p>
+<pre><code>// configure GPIO
+RCC-&gt;AHB2ENR |= (1 &lt;&lt; 0); // turn GPIOA clock
+RCC-&gt;APB2ENR |= (1 &lt;&lt; 16); // enable TIM15
+RCC-&gt;APB2ENR |= (1 &lt;&lt; 17); // enable TIM16</code></pre>
+<p>Then I specified for that pin to be pin 6, and set the function to be alternate funcion 14 to connect TIM16 Channel 1.</p>
+<pre><code>// use pin 6
+pinMode(6, GPIO_ALT); // set pin 6 to alt function
+GPIO-&gt;AFRL &amp;= ~(0b1111&lt;&lt;4*6); // clear alt func bits
+GPIO-&gt;AFRL |= (14&lt;&lt;4*6); // set pin 6 to alt func 14</code></pre>
+<p>Now, I configure the Timers with the headers and drivers that I wrote:</p>
+<pre><code>configureTIM15();
+configureTIM16();</code></pre>
+<p>We can see these functions in the file I wrote, STM32L432KC_TIM.c:</p>
+<pre><code>// Function configureTIM16:
+// Sets up TIM15 for use for measuring duration of a note
+// Uses a prescaler of 700
+// No arguments
+void configureTIM15(void) {
+    
+    TIM15-&gt;CR1 &amp;= ~(1&lt;&lt;0); // disable counter
+    TIM15-&gt;PSC = 700; // PSC = 700
+    TIM15-&gt;EGR |= (1&lt;&lt;0); // trigger an update
+    TIM15-&gt;CR1 |= (1&lt;&lt;0); // enable counter
+}
+
+// Function configureTIM16:
+// Sets up TIM16 for use for setting the frequency of a note
+// Uses a prescaler of 6
+// Uses duty cycle of 50%
+// No arguments
+void configureTIM16(void){
+
+    // Set PWM mode
+    TIM16-&gt;CCMR1 &amp;= ~(0b111 &lt;&lt; 4);  // clear OC1M[2:0] 
+    TIM16-&gt;CCMR1 |= (0b110 &lt;&lt; 4);  // set PWM mode 1
+    TIM16-&gt;CCMR1 |= (1 &lt;&lt; 3);       // Set preload enable
+    TIM16-&gt;CCMR1 &amp;= ~(0b11 &lt;&lt; 0);  // Set CC1 channel as output
+
+    TIM16-&gt;CR1 |= (1 &lt;&lt; 7); // enable ARPE
+    TIM16-&gt;CCER |= (1 &lt;&lt; 0); // Capture/Compare 1 output enable
+    TIM16-&gt;BDTR |= (1 &lt;&lt; 15); // Main output enable
+
+    // set Prescaler
+    TIM16-&gt;PSC = 6; // PSC = 6
+    TIM16-&gt;ARR = 0xFFFF;  // auto-reload
+
+    // Update changes and enable counter 
+    TIM16-&gt;CR1 &amp;= ~(1 &lt;&lt; 0); // disable counter
+    TIM16-&gt;EGR |= (1 &lt;&lt; 0); // trigger an update
+    TIM16-&gt;CR1 |= (1 &lt;&lt; 0); // enable counter
+}</code></pre>
+<p>Here we see that the configuration for TIM15 is a lot simpler because it is not connected to a pin and it is not using PWM. For TIM16, we set CCMR1 to PWM mode 1, so that the output flips each cycle when it gets to the value in CCR1 which depends on the duty cycle. Both timers have a prescaler set to match out desired range of frequencies and durations with maximum accuracy.</p>
+<p>Now that the timers are configured, it is just a matter of setting the auto-reload register (ARR) to change the duration or frequency of a note, and updating the timer for the next note. I also update CCR1 to ensure that every note has 50% duty cycle for even volumes.</p>
+<pre><code>// Function setFreq:
+// Sets the frequency (in Hz) on TIM16
+// Arguments: int freq specifies the frequency of a note in Hz
+void setFreq(int freq){
+    if (freq == 0){
+        // If freq == 0 it is supposed to be silent
+        TIM16-&gt;CCR1 = 0; // 0 Percent duty cycle 
+    } else {
+        // Toggle pin at freq
+        TIM16-&gt;ARR = (80000000/(6+1)/freq) - 1; // 80 MHz / (PSC + 1) / Freq -1 yeields count to produce desiredd freq
+        TIM16-&gt;CCR1 = ((80000000/(6+1)/freq) - 1)/2; // 50 Percent duty cycle 
+        TIM16-&gt;EGR |= (1 &lt;&lt; 0); // trigger an update
+        TIM16-&gt;CR1 |= (1 &lt;&lt; 0); // enable counter
+
+    }
+}
+
+// Function setDur:
+// Sets the delay (in ms) on TIM15
+// Num cycles delay = (ARR+1)*(PSC+1)
+// Arguments: int dur specifies the duration of a note in ms
+void setDur(int dur){
+    int cycles_per_ms = 80000000/1000/701; // 80 MHz / (1 s to 1000 ms)/ (Prescaler + 1) 
+
+    TIM15-&gt;ARR = cycles_per_ms*dur; // Sets auto-reload register to desired number of ticks
+    TIM15-&gt;EGR |= (1 &lt;&lt; 0); // trigger an update
+    TIM15-&gt;SR &amp;= ~(1 &lt;&lt; 0); // clear UIF bit
+    TIM15-&gt;CNT = 0; // reset counter before while loop
+    
+    while (!(TIM15-&gt;SR &amp; (1&lt;&lt;0))); // waits until counter reaches tick count
+}</code></pre>
 </section>
 <section id="calculations" class="level3">
 <h3 class="anchored" data-anchor-id="calculations">Calculations</h3>
@@ -241,6 +334,18 @@ window.Quarto = {
 <p><span class="math display">\[1000 = \frac{80,000,000}{(6+1)(ARR+1)}\]</span> <span class="math display">\[ARR = \frac{79993}{7} \approx 11428\]</span></p>
 <p>Plugging back in to see the actual frequency with <span class="math inline">\(ARR = 11428\)</span>: <span class="math display">\[f_{TIM} = \frac{80,000,000}{(6+1)(11428+1)} = 999.9625 Hz\]</span> Percent error: <span class="math display">\[\% Error = \frac{|999.9625-1000|}{1000} * 100 = 0.00375 \% &lt; 1 \% \]</span> We can see that the error introduced by rouding from the ARR is way less than 1 %.</p>
 </section>
+</section>
+<section id="choosing-auto-reload-register-values" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-auto-reload-register-values">Choosing Auto-Reload Register Values</h3>
+<p>To choose an ARR value to match the duration or frequency, I use the same formula as before: <span class="math display">\[f_{TIM} = \frac{f_{input}}{(PSC + 1) * (ARR + 1)}\]</span></p>
+<p>Now that we know the prescaler values, given a known desired frequency or duration we can solve for ARR.</p>
+<p>For duration, I first solve for the number of ticks in a ms with my PLL frequency and prescaler, then multiply that the number of ms that I want.</p>
+<pre><code>int cycles_per_ms = 80000000/1000/701; // 80 MHz / (1 s to 1000 ms)/ (Prescaler + 1) 
+
+TIM15-&gt;ARR = cycles_per_ms*dur; // Sets auto reload register to desired number of ticks</code></pre>
+<p>For frequency, I simply solve for ARR and plug in values. CCR1 is set to half of ARR for 50% duty cycle.</p>
+<pre><code>TIM16-&gt;ARR = (80000000/(6+1)/freq) - 1; // 80 MHz / (PSC + 1) / Freq -1 yeields count to produce desiredd freq
+TIM16-&gt;CCR1 = ((80000000/(6+1)/freq) - 1)/2; // 50 Percent duty cycle </code></pre>
 </section>
 </section>
 <section id="technical-documentation" class="level2">
