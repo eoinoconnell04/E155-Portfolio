@@ -18,7 +18,7 @@
     "href": "labs.html",
     "title": "Labs",
     "section": "",
-    "text": "Lab1: FPGA and MCU Setup and Testing\n\n\n\nLab 2: Multiplexed 7-Segment Display\n\n\n\nLab 3: Keypad Scanner"
+    "text": "Lab1: FPGA and MCU Setup and Testing\n\n\n\nLab 2: Multiplexed 7-Segment Display\n\n\n\nLab 3: Keypad Scanner\n\n\n\nLab 4: Digital Audio"
   },
   {
     "objectID": "labs.html#lab-1-fpga-and-mcu-setup-and-testing",
@@ -45,8 +45,8 @@
     "objectID": "labs.html#lab-4-digital-audio",
     "href": "labs.html#lab-4-digital-audio",
     "title": "Labs",
-    "section": "Lab 4: Digital Audio",
-    "text": "Lab 4: Digital Audio\nLab 4: Digital Audio"
+    "section": "",
+    "text": "Lab 4: Digital Audio"
   },
   {
     "objectID": "labs.html#lab-5-interrupts",
@@ -222,6 +222,55 @@
     "title": "Lab 2: Multiplexed 7-Segment Display",
     "section": "AI Prototype Summary",
     "text": "AI Prototype Summary\n\nPrompt 1: Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits.\n\nI used my ChatGPT free account to create this, and the file is here on my github.\nI opened up the verilog in Radiant, it synthesized without any issues. The first thing I noticed when looking at the Netlist analyzer is that there are 2 sets of seven segment display outputs. I think that the wording of the prompt suggests this, and that if I wanted to run this on my board (which doesn’t have enough GPIO pins to allow 14 pins for the seven segment display) I could easily ask Chat to fix this for me. Essentially, I think that it was correct for what it was trying to do.\nLooking at the SystemVerilog itself, I noticed that while the AI included pleanty inline comments explaining what each line does, the over style was very poor, with no modules. I think that by modifying the prompt to tell it to use a modular design it would do well on this.\nNext I tried the second prompt given in the lab manual.\n\nPrompt 2: Write SystemVerilog HDL to time multiplex a single seven segment decoder (that decodes from four bits to a common anode seven segment display) to decode two sets of input bits and drive two sets of seven output bits. Use the seven segment decoder and oscillator provided in the attached files.\n\nFor some reason, despite providing the files as context, the LLM did not use the correct port names when instantiating the modules. For example for the divider it used clk_in and clk_out instead of clk and divided_clk which my module uses. Likewise it used in and out for the seven segment display instead of s and seg. It also got the parameter name TOGGLE_COUNT wrong and called it n. Somehow it new what the inputs, outputs, and parameters were, but somehow did not copy over the names correctly.\nI performed those manual changes, the design synthesized correctly. It got the oscillator correct, and the rest of the SystemVerilog code seems reasonable (but also not modular like Prompt 1 response).\nI think that a lot of these errors would be better with a different model and IDE such as Cursor instead of providing the files to chat gpt. During my internship I found that Cursor + Claude Sonnet worked very well and didn’t make these kinds of mistakes, but I do not have access to these anymore. For things like writting modular code, style, and comments, something like a Cursor rules file, or a thing that you add to every prompt/conversation with specific instructions would help get results that are closer to what the user desires."
+  },
+  {
+    "objectID": "labs/lab4/lab4.html",
+    "href": "labs/lab4/lab4.html",
+    "title": "Lab 4: Digital Audio",
+    "section": "",
+    "text": "This is the first Lab in E155 working with microcontrollers. The goal of this lab is to get comfortable with our microcontroller, the STM32L432KC, and to learn how to write our own drivers and header files."
+  },
+  {
+    "objectID": "labs/lab4/lab4.html#introduction",
+    "href": "labs/lab4/lab4.html#introduction",
+    "title": "Lab 4: Digital Audio",
+    "section": "",
+    "text": "This is the first Lab in E155 working with microcontrollers. The goal of this lab is to get comfortable with our microcontroller, the STM32L432KC, and to learn how to write our own drivers and header files."
+  },
+  {
+    "objectID": "labs/lab4/lab4.html#design-and-testing-methodology",
+    "href": "labs/lab4/lab4.html#design-and-testing-methodology",
+    "title": "Lab 4: Digital Audio",
+    "section": "Design and Testing Methodology",
+    "text": "Design and Testing Methodology\nThe primary challenges of this lab are in the setup of the microcontroller, getting the clock to function as expected, and setting specific bits in registers to get everything to work. Therefore, a lot of the troubleshooting is to make sure that everything is setup correctly.\nOnce I am able to get the GPIO pins to toggle at specified frequencies, the final testing to confirm correct functionality is relatively simple.\n\nSegger Testing\nBefore ever flashing the MCU or building a circuit, I tested my code in Segger Embedded Studio, loaded with drivers and backages for my STM32L432KC MCU. This allowed me to test that my code was working as intended.\n\n\nOsilloscope Testing\nTo confirm that the song is playing at the correct frequency of notes and the duration is correct, I will use an oscilloscope.\n\n\nEar test\nOf course, for this type of lab the ultimate test is to make sure that the songs, Fur Elise and Happy Birthday, sound to our ears as they expect. Our ears are very good at detecting if the intervals between notes are not correct, or if the rythem is not steady. I don’t have perfect pitch so I cannot confirm that it is in the correct key, but I can tell if everything is correct relative to each other.\n\n\nCalculations\nI need to calculate the frequency of the timers with the specific parameters that I have chosen, particulary the prescaler and the auto-reload register. To do this I will rely on the formula: \\[f_{TIM} = \\frac{f_{input}}{(PSC + 1) * (ARR + 1)}\\]\nFor TIM15 (duration):\n\nARR = duration dependent\nPSC = 700\n\nTo find the min and max durations, I can solve the equaion for when ARR is at its min and max value. When ARR = 0, \\(f_{TIM} = \\frac{f_{input}}{701}\\). With an 80 Mhz clock, that means that the timer will toggle at 114123 Hz, or a minimum delay of 8.7625 \\(\\micro s\\).\nThe max duration is when ARR = h’FFFF = d’65535. \\(f_{TIM} = \\frac{f_{input}}{(700+1)(65535+1)} = 1.7\\) Hz. This gives a max delay of 0.574 s, which is long enough for my longest notes.\nFor TIM16 (PWM):\n\nARR = freq dependent\nPSC = 6\n\nTo find the min and max frequencies, I use the same equation. When ARR = 0, \\(f_{TIM} = \\frac{f_{input}}{6+1}\\). For 80 Mhz, this gives us 11.4 MHz. When ARR = h’FFFF = d’65535, \\(f_{TIM} = \\frac{f_{input}}{(6+1)(65535+1)} = 174.38\\) Hz. We are looking for frequencies between around 200-1400 Hz, so this will cover this range.\nOne part of this lab is ensuring that pitches are correct to 1% accuracy accross 200-1000 Hz.\n\n200 Hz:\n\\[200 = \\frac{80,000,000}{(6+1)(ARR+1)}\\] \\[ARR = \\frac{399993}{7} \\approx 57142\\]\nPlugging back in to see the actual frequency with \\(ARR = 57142\\): \\[f_{TIM} = \\frac{80,000,000}{(6+1)(57142+1)} = 199.9995 Hz\\] Percent error: \\[\\% Error = \\frac{|199.9995-200|}{200} * 100 = 0.00025 \\% &lt; 1 \\% \\] We can see that the error introduced by rouding from the ARR is way less than 1 %.\n\n\n1000 Hz:\n\\[1000 = \\frac{80,000,000}{(6+1)(ARR+1)}\\] \\[ARR = \\frac{79993}{7} \\approx 11428\\]\nPlugging back in to see the actual frequency with \\(ARR = 11428\\): \\[f_{TIM} = \\frac{80,000,000}{(6+1)(11428+1)} = 999.9625 Hz\\] Percent error: \\[\\% Error = \\frac{|999.9625-1000|}{1000} * 100 = 0.00375 \\% &lt; 1 \\% \\] We can see that the error introduced by rouding from the ARR is way less than 1 %."
+  },
+  {
+    "objectID": "labs/lab4/lab4.html#technical-documentation",
+    "href": "labs/lab4/lab4.html#technical-documentation",
+    "title": "Lab 4: Digital Audio",
+    "section": "Technical Documentation:",
+    "text": "Technical Documentation:\nThe code for my project can be found on my github page. Lab4 Github Repository\n\nSchematic\n\n\nFigure 1: Schematic of the Physical Circuit.\n\nFigure 1 shows the physical layout of the design. It shows the microcontroller Pin 6, which has the audio output, first going through a 50 k\\(\\Omega\\) potentiometer to be able to adjust the volume. Then this output goes into the LM386 audio amplifier. By connecting 5V to pin 6, ground to pin 2, and the input to pin 3, and not connection any other pins, we get a gain of 20. This allows us to get a higher voltage output then would have been possible then straight out of the MCU.\nFinally, the amplifier output goes to a 8 W, 4 \\(\\Omega\\) speaker."
+  },
+  {
+    "objectID": "labs/lab4/lab4.html#results-and-discussion",
+    "href": "labs/lab4/lab4.html#results-and-discussion",
+    "title": "Lab 4: Digital Audio",
+    "section": "Results and Discussion",
+    "text": "Results and Discussion\nI accomplished all of the perscribed tasks: The speaker plays the songs with notes at the correct frequency and duration.\nOsilloscope Waveforms:"
+  },
+  {
+    "objectID": "labs/lab4/lab4.html#conclusion",
+    "href": "labs/lab4/lab4.html#conclusion",
+    "title": "Lab 4: Digital Audio",
+    "section": "Conclusion",
+    "text": "Conclusion\nLab 4 was quite difficult, due to it being the first MCU lab. I spent around 20 hours in total working on this lab, with a lot of time just looking through the datasheets.\nThe lab was succesfull as I was able to get everything to work as intended.\nThe most difficult part of this lab was going through the datasheet to figure out which registers and bits needed to be set. It was easy to go through the mechanics of clearing and setting bits when I knew what my goal was, but it was very difficult to figure out how to use the timers."
+  },
+  {
+    "objectID": "labs/lab4/lab4.html#ai-prototype-summary",
+    "href": "labs/lab4/lab4.html#ai-prototype-summary",
+    "title": "Lab 4: Digital Audio",
+    "section": "AI Prototype Summary",
+    "text": "AI Prototype Summary\n\nLLM Prompt:\nWhat timers should I use on the STM32L432KC to generate frequencies ranging from 220Hz to 1kHz? What’s the best choice of timer if I want to easily connect it to a GPIO pin? What formulae are relevant, and what registers need to be set to configure them properly?\n\nI was very impressed by ChatGPT’s output even without providing the datasheet. The first section of the response was non the different timers that I could use, and it gave a very helpful description of the different timers, explaining which ones were easily connected to GPIO pins, which were 16 and 32 bits, and more. It reflected the datasheet to the best of my knowledge, for example recomending TIM15 and TIM16 which we looked at in class.\nFor the fommulas, it was also very helpful. It explained the prescaler (PSC) and the auto-reload register (ARR), and gave the following function for the timer update frequency as a function of these two parameters: \\[ f_{update} = \\frac{f_{TIMxCLK}}{(PSC+1)(ARR+1)} \\]\nIt additionally gave some other formulas for different modes, such as toggle on compare. It gave example calculations that solved for the pin frequency with different parameters.\nTo configure the registers, it gave the following output:\n\nEnable clock timer:\n\nRCC_APB1ENR1 → set TIM2EN.\n\nSet prescaler & ARR:\n\nTIM2-&gt;PSC = 799;      // prescaler TIM2-&gt;ARR = 226;      // auto-reload\n\nConfigure Output Compare\n\nTIM2-&gt;CCMR1 |= (0b011 &lt;&lt; TIM_CCMR1_OC1M_Pos);  // OC1M = toggle on match TIM2-&gt;CCER  |= TIM_CCER_CC1E;                  // Enable channel TIM2-&gt;CCR1   = 0;                              // Compare value\n\nMap channel to GPIO pin (Alternate Function)\n\nEnable GPIO clock. Set MODER to alternate function. Configure AFR (look up AF mapping in datasheet: e.g. PA0 → TIM2_CH1 AF1).\n\nEnable counter\n\nTIM2-&gt;CR1 |= TIM_CR1_CEN;\nSummary:\n\nBest timers:\n\nTIM1 (advanced, good defaults)\n\nTIM2 (32-bit, flexible)\n\nTIM15–TIM17 (also fine)\n\nAvoid TIM6/7 (no GPIO output)\n\nFormulas:\n\nUpdate frequency:\nf_update = f_clk / ((PSC + 1) * (ARR + 1))\nToggle frequency:\nf_toggle = f_update / 2\n\nRegisters needed:\n\nPSC, ARR, CCRn\nCCMRx (mode: toggle / PWM)\nCCER (enable output)\nCR1 (enable timer)\nGPIOx_MODER, GPIOx_AFR (pin mapping)\n\n\nOverall, this gave a very good overview of the general steps that are necessary to configure the clock, yet it was missing specific infomration, such as the registers and bits that need to be set. I am confident that by giving the datasheet, an example header file, and more specific instructions for what I wanted I could get the header file that I am trying to make."
   },
   {
     "objectID": "posts/first-post.html",
