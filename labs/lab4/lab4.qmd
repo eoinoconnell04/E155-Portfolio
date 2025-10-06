@@ -87,7 +87,7 @@ Finally, the amplifier output goes to a 8 W, 4 $\Omega$ speaker.
 I accomplished all of the perscribed tasks: The speaker plays the songs with notes at the correct frequency and duration.
 
 Osilloscope Waveforms:
-<!--
+
 ### Duration
 
 To confirm that the duration of each note is right, I performed tests by looking at the oscilloscope trace for a note of known duration.
@@ -139,7 +139,6 @@ Percent error:
 $$\% Error = \frac{|996.0-1000|}{1000} * 100 = 0.398 \% < 1 \% $$
 
 From this we can see that frequencies accross the range of 200 Hz to 1000 Hz all have less than 1% error.
--->
 
 ## Conclusion
 
