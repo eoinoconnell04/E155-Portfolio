@@ -162,7 +162,11 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
   </ul></li>
-  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a>
+  <ul class="collapse">
+  <li><a href="#duration" id="toc-duration" class="nav-link" data-scroll-target="#duration">Duration</a></li>
+  <li><a href="#frequency" id="toc-frequency" class="nav-link" data-scroll-target="#frequency">Frequency</a></li>
+  </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
   </ul>
@@ -255,59 +259,46 @@ Figure 1: Schematic of the Physical Circuit.
 <section id="results-and-discussion" class="level2">
 <h2 class="anchored" data-anchor-id="results-and-discussion">Results and Discussion</h2>
 <p>I accomplished all of the perscribed tasks: The speaker plays the songs with notes at the correct frequency and duration.</p>
-<p>Osilloscope Waveforms: <!--
-### Duration
-
-To confirm that the duration of each note is right, I performed tests by looking at the oscilloscope trace for a note of known duration.
-
-![](images/200ms.png)
-
-<figcaption> Figure 2: Oscilloscope trace of a 200 ms duration note.</figcaption>
-
-Percent error:
-$$\% Error = \frac{|200-200|}{200} * 100 = 0 \% < 1 \% $$
-
-![](images/500ms.png)
-
-<figcaption> Figure 3: Oscilloscope trace of a 500 ms duration note.</figcaption>
-
-Percent error:
-$$\% Error = \frac{|500-500|}{500} * 100 = 0 \% < 1 \% $$
-
-### Frequency
-
-To find frequency from the oscilloscope trace, we use the formula $f = \frac{1}{T}$.
-
-![](images/200Hz.png)
-
-<figcaption> Figure 4: Oscilloscope trace of a 200 Hz note.</figcaption>
-
-Percent error:
-$$\% Error = \frac{|198.8-200|}{200} * 100 = 0.596 \% < 1 \% $$
-
-![](images/220Hz.png)
-
-<figcaption> Figure 5: Oscilloscope trace of a 220 Hz note.</figcaption>
-
-Percent error:
-$$\% Error = \frac{|218.8-220|}{220} * 100 = 0.59 \% < 1 \% $$
-
-![](images/800Hz.png)
-
-<figcaption> Figure 6: Oscilloscope trace of a 800 Hz note.</figcaption>
-
-Percent error:
-$$\% Error = \frac{|798.7-800|}{800} * 100 = 0.160 \% < 1 \% $$
-
-![](images/1000Hz.png)
-
-<figcaption> Figure 7: Oscilloscope trace of a 1000 Hz note.</figcaption>
-
-Percent error:
-$$\% Error = \frac{|996.0-1000|}{1000} * 100 = 0.398 \% < 1 \% $$
-
-From this we can see that frequencies accross the range of 200 Hz to 1000 Hz all have less than 1% error.
---></p>
+<p>Osilloscope Waveforms:</p>
+<section id="duration" class="level3">
+<h3 class="anchored" data-anchor-id="duration">Duration</h3>
+<p>To confirm that the duration of each note is right, I performed tests by looking at the oscilloscope trace for a note of known duration.</p>
+<p><img src="images/200ms.png" class="img-fluid"></p>
+<figcaption>
+Figure 2: Oscilloscope trace of a 200 ms duration note.
+</figcaption>
+<p>Percent error: <span class="math display">\[\% Error = \frac{|200-200|}{200} * 100 = 0 \% &lt; 1 \% \]</span></p>
+<p><img src="images/500ms.png" class="img-fluid"></p>
+<figcaption>
+Figure 3: Oscilloscope trace of a 500 ms duration note.
+</figcaption>
+<p>Percent error: <span class="math display">\[\% Error = \frac{|500-500|}{500} * 100 = 0 \% &lt; 1 \% \]</span></p>
+</section>
+<section id="frequency" class="level3">
+<h3 class="anchored" data-anchor-id="frequency">Frequency</h3>
+<p>To find frequency from the oscilloscope trace, we use the formula <span class="math inline">\(f = \frac{1}{T}\)</span>.</p>
+<p><img src="images/200Hz.png" class="img-fluid"></p>
+<figcaption>
+Figure 4: Oscilloscope trace of a 200 Hz note.
+</figcaption>
+<p>Percent error: <span class="math display">\[\% Error = \frac{|198.8-200|}{200} * 100 = 0.596 \% &lt; 1 \% \]</span></p>
+<p><img src="images/220Hz.png" class="img-fluid"></p>
+<figcaption>
+Figure 5: Oscilloscope trace of a 220 Hz note.
+</figcaption>
+<p>Percent error: <span class="math display">\[\% Error = \frac{|218.8-220|}{220} * 100 = 0.59 \% &lt; 1 \% \]</span></p>
+<p><img src="images/800Hz.png" class="img-fluid"></p>
+<figcaption>
+Figure 6: Oscilloscope trace of a 800 Hz note.
+</figcaption>
+<p>Percent error: <span class="math display">\[\% Error = \frac{|798.7-800|}{800} * 100 = 0.160 \% &lt; 1 \% \]</span></p>
+<p><img src="images/1000Hz.png" class="img-fluid"></p>
+<figcaption>
+Figure 7: Oscilloscope trace of a 1000 Hz note.
+</figcaption>
+<p>Percent error: <span class="math display">\[\% Error = \frac{|996.0-1000|}{1000} * 100 = 0.398 \% &lt; 1 \% \]</span></p>
+<p>From this we can see that frequencies accross the range of 200 Hz to 1000 Hz all have less than 1% error.</p>
+</section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
