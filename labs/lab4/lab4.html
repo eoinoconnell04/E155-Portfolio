@@ -206,7 +206,7 @@ window.Quarto = {
 <p>Once I am able to get the GPIO pins to toggle at specified frequencies, the final testing to confirm correct functionality is relatively simple.</p>
 <section id="segger-testing" class="level3">
 <h3 class="anchored" data-anchor-id="segger-testing">Segger Testing</h3>
-<p>Before ever flashing the MCU or building a circuit, I tested my code in Segger Embedded Studio, loaded with drivers and backages for my STM32L432KC MCU. This allowed me to test that my code was working as intended. I looked into the relevant registers to ensure that bits were getting updated, specfically that the counters were incrementing and resetting and the desired points.</p>
+<p>Before ever flashing the MCU or building a circuit, I tested my code in Segger Embedded Studio, loaded with drivers and packages for my STM32L432KC MCU. This allowed me to test that my code was working as intended. I looked into the relevant registers to ensure that bits were getting updated, specfically that the counters were incrementing and resetting and the desired points.</p>
 </section>
 <section id="osilloscope-testing" class="level3">
 <h3 class="anchored" data-anchor-id="osilloscope-testing">Osilloscope Testing</h3>
@@ -284,7 +284,7 @@ void setFreq(int freq){
         TIM16-&gt;CCR1 = 0; // 0 Percent duty cycle 
     } else {
         // Toggle pin at freq
-        TIM16-&gt;ARR = (80000000/(6+1)/freq) - 1; // 80 MHz / (PSC + 1) / Freq -1 yeields count to produce desiredd freq
+        TIM16-&gt;ARR = (80000000/(6+1)/freq) - 1; // 80 MHz / (PSC + 1) / Freq -1 yeields count to produce desired freq
         TIM16-&gt;CCR1 = ((80000000/(6+1)/freq) - 1)/2; // 50 Percent duty cycle 
         TIM16-&gt;EGR |= (1 &lt;&lt; 0); // trigger an update
         TIM16-&gt;CR1 |= (1 &lt;&lt; 0); // enable counter

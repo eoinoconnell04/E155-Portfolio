@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -116,8 +145,28 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a>
+  <ul class="collapse">
+  <li><a href="#interrupt-based-code-vs-polling-based-code" id="toc-interrupt-based-code-vs-polling-based-code" class="nav-link" data-scroll-target="#interrupt-based-code-vs-polling-based-code">Interrupt Based Code vs Polling Based Code</a></li>
+  <li><a href="#flow-chart" id="toc-flow-chart" class="nav-link" data-scroll-target="#flow-chart">Flow Chart</a></li>
+  <li><a href="#segger-testing" id="toc-segger-testing" class="nav-link" data-scroll-target="#segger-testing">Segger Testing</a></li>
+  <li><a href="#frequency-and-direction-calculations" id="toc-frequency-and-direction-calculations" class="nav-link" data-scroll-target="#frequency-and-direction-calculations">Frequency and Direction Calculations</a></li>
+  </ul></li>
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation:</a>
+  <ul class="collapse">
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  </ul></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -141,8 +190,114 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This is the second Lab in E155 working with microcontrollers. The goal of this lab is to get comfortable with interrupts through designing an algorithm to sense quadrature encoder pulses and convert these into motor velocity and direction.</p>
+</section>
+<section id="design-and-testing-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
+<p>The primary challenges of this lab are in the setup of the interrupts themselves. There are 4 possible interrupts, a rising or falling edge at A, or a rising or falling edge at B. This gives us all the information we need to be able to determine both velocity and direction.</p>
+<section id="interrupt-based-code-vs-polling-based-code" class="level3">
+<h3 class="anchored" data-anchor-id="interrupt-based-code-vs-polling-based-code">Interrupt Based Code vs Polling Based Code</h3>
+<p>Interrupts are better than manual polling because they allow the microcontroller to respond immediately to encoder signal changes without constantly checking pin states in a loop. This makes the system far more efficient, as the CPU can perform other tasks while waiting for events instead of wasting cycles on continuous polling. At high speeds, interrupts also ensure more accurate and reliable pulse detection, since polling may miss transitions that occur faster than the loop’s execution rate.</p>
+<p>To have correct data, we need to satisfy the Shannon-Nyquist theorem that <span class="math inline">\(f_{sample} \geq 2 * f_{max}\)</span>. For manual polling, we need to pick a sampling rate and if the frequency of the motor hits a certain threshold then we will have aliasing, where it will read a lower frequency.</p>
+<p>Interrupt servicing is almost always much faster than polling loops, meaning that we can detect a much higher max frequency before aliasing or any other issues arise.</p>
+</section>
+<section id="flow-chart" class="level3">
+<h3 class="anchored" data-anchor-id="flow-chart">Flow Chart</h3>
+<p>My program uses an infinity loop consisting of a busy wait that is exited due to interrupts signalling a change in pin A or pin B. Then it does some calculations and measurements before entering the busy state again.</p>
+<p><img src="images/flow_chart.png" class="img-fluid"></p>
+<figcaption>
+Figure 1: Flow Chart of Interrupts and Main Loop Interactions.
+</figcaption>
+</section>
+<section id="segger-testing" class="level3">
+<h3 class="anchored" data-anchor-id="segger-testing">Segger Testing</h3>
+<p>Before ever flashing the MCU or connecting the motor, I tested my code in Segger Embedded Studio, loaded with drivers and packages for my STM32L432KC MCU. This allowed me to test that my code was working as intended. I looked into the relevant registers ensure that the timers were working as intended.</p>
+</section>
+<section id="frequency-and-direction-calculations" class="level3">
+<h3 class="anchored" data-anchor-id="frequency-and-direction-calculations">Frequency and Direction Calculations</h3>
+<section id="frequency" class="level4">
+<h4 class="anchored" data-anchor-id="frequency">Frequency</h4>
+<p>To measure the frequency I measure the time between two interrupts using a timer. The timer runs off the 80 MHz PLL, with a prescaler of 79 to give a 1 Mhz clock.</p>
+<p><span class="math display">\[f_{\text{motor}} = \frac{f_{\text{timer}}}{(\text{\# of cycles between edges}) \times \text{PPR} \times \text{(\# of edges)}}\]</span></p>
+<p>The motor in lab has <span class="math inline">\(PPR = 408\)</span>, and there are 4 edges (rising and falling edges at A and B). Thus we get the following equation:</p>
+<p><span class="math display">\[f_{\text{motor}} = \frac{f_{\text{timer}}}{(\text{\# of cycles between edges}) \times 1,632}\]</span></p>
+</section>
+</section>
+</section>
+<section id="technical-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="technical-documentation">Technical Documentation:</h2>
+<p>The code for my project can be found on my github page. <a href="https://github.com/eoinoconnell04/E155-Lab5">Lab5 Github Repository</a></p>
+<section id="schematic" class="level3">
+<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<p><img src="images/schematic.png" class="img-fluid"></p>
+<figcaption>
+Figure 2: Schematic of the Physical Circuit.
+</figcaption>
+<p>Figure 2 shows the physical layout of the design. It shows the microcontroller Pin 6, which has the audio output, first going through a 50 k<span class="math inline">\(\Omega\)</span> potentiometer to be able to adjust the volume. Then this output goes into the LM386 audio amplifier. By connecting 5V to pin 6, ground to pin 2, and the input to pin 3, and not connection any other pins, we get a gain of 20. This allows us to get a higher voltage output then would have been possible then straight out of the MCU.</p>
+<p>Finally, the amplifier output goes to a 8 W, 4 <span class="math inline">\(\Omega\)</span> speaker.</p>
+</section>
+</section>
+<section id="results-and-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="results-and-discussion">Results and Discussion</h2>
+<!-- I accomplished all of the perscribed tasks: The microcontroller correctly measures the velocity and direction of the motor.
+-->
+<p>I have not gotten the MCU to work correctly yet. I plan to get this working in the next few days.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>I am still getting errors in segger and have not tested it on the MCU yet. I have spent 10 hours so far.</p>
+<!--
+
+Lab 5 was moderately difficult for this class, due to it being the first MCU lab. I spent around 15 hours in total working on this lab, with a lot of time going through the interrupts tutorial and device datasheets.
+
+The lab was succesfull as I was able to get everything to work as intended.
+
+-->
+</section>
+<section id="ai-prototype-summary" class="level2">
+<h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
+<blockquote class="blockquote">
+<p><strong><em>LLM Prompt:</em></strong><br>
+Write me interrupt handlers to interface with a quadrature encoder. I’m using the STM32L432KC, what pins should I connect the encoder to in order to allow it to easily trigger the interrupts?</p>
+</blockquote>
+<pre><code>void Encoder_GPIO_Init(void) {
+    RCC-&gt;AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    GPIOA-&gt;MODER &amp;= ~((3 &lt;&lt; (0*2)) | (3 &lt;&lt; (1*2))); // input mode
+
+    // Enable EXTI lines 0 and 1
+    RCC-&gt;APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+    SYSCFG-&gt;EXTICR[0] |= 0x0000; // PA0-&gt;EXTI0, PA1-&gt;EXTI1
+
+    EXTI-&gt;IMR1 |= (1 &lt;&lt; 0) | (1 &lt;&lt; 1);
+    EXTI-&gt;RTSR1 |= (1 &lt;&lt; 0) | (1 &lt;&lt; 1);
+    EXTI-&gt;FTSR1 |= (1 &lt;&lt; 0) | (1 &lt;&lt; 1);
+
+    NVIC_EnableIRQ(EXTI0_IRQn);
+    NVIC_EnableIRQ(EXTI1_IRQn);
+}
+
+volatile int32_t position = 0;
+
+void EXTI0_IRQHandler(void) {
+    if (EXTI-&gt;PR1 &amp; (1 &lt;&lt; 0)) {
+        EXTI-&gt;PR1 |= (1 &lt;&lt; 0);
+        int b = (GPIOA-&gt;IDR &amp; (1 &lt;&lt; 1)) ? 1 : 0;
+        position += (b ? -1 : 1);
+    }
+}
+
+void EXTI1_IRQHandler(void) {
+    if (EXTI-&gt;PR1 &amp; (1 &lt;&lt; 1)) {
+        EXTI-&gt;PR1 |= (1 &lt;&lt; 1);
+        int a = (GPIOA-&gt;IDR &amp; (1 &lt;&lt; 0)) ? 1 : 0;
+        position += (a ? 1 : -1);
+    }
+}</code></pre>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
