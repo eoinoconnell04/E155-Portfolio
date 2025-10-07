@@ -20,11 +20,13 @@ title: "Labs"
 
 [Lab 4: Digital Audio](labs/lab4/lab4.qmd)
 
-# Future Labs:
+# In Progress Labs:
 
 ## Lab 5: Interrupts
 
 [Lab 5: Interrupts](labs/lab5/lab5.qmd)
+
+# Future Labs:
 
 ## Lab 6: The Internet of Things and Serial Peripheral Interface
 

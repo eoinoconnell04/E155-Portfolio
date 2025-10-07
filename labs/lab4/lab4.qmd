@@ -15,7 +15,7 @@ Once I am able to get the GPIO pins to toggle at specified frequencies, the fina
 
 ### Segger Testing
 
-Before ever flashing the MCU or building a circuit, I tested my code in Segger Embedded Studio, loaded with drivers and backages for my STM32L432KC MCU. This allowed me to test that my code was working as intended. I looked into the relevant registers to ensure that bits were getting updated, specfically that the counters were incrementing and resetting and the desired points. 
+Before ever flashing the MCU or building a circuit, I tested my code in Segger Embedded Studio, loaded with drivers and packages for my STM32L432KC MCU. This allowed me to test that my code was working as intended. I looked into the relevant registers to ensure that bits were getting updated, specfically that the counters were incrementing and resetting and the desired points. 
 
 ### Osilloscope Testing
 
@@ -115,7 +115,7 @@ void setFreq(int freq){
         TIM16->CCR1 = 0; // 0 Percent duty cycle 
     } else {
         // Toggle pin at freq
-        TIM16->ARR = (80000000/(6+1)/freq) - 1; // 80 MHz / (PSC + 1) / Freq -1 yeields count to produce desiredd freq
+        TIM16->ARR = (80000000/(6+1)/freq) - 1; // 80 MHz / (PSC + 1) / Freq -1 yeields count to produce desired freq
         TIM16->CCR1 = ((80000000/(6+1)/freq) - 1)/2; // 50 Percent duty cycle 
         TIM16->EGR |= (1 << 0); // trigger an update
         TIM16->CR1 |= (1 << 0); // enable counter
