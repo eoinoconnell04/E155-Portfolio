@@ -145,18 +145,31 @@ Here we can see that the test verison spends 10 cycles at zero and 10 cycles at 
 
 Figure 8 gives confirmation that the module outputs match the expected values for all tests.
 
+Figures 9-14 give confirmation that all the other submodules also perform their function as intended.
+
 ![](images/clk_phase_shifter_waveforms.png)
 ![](images/clk_phase_shifter_tests.png)
+<figcaption> Figure 9: Phase shifter module testbench output.</figcaption>
+
 ![](images/jitter_controller_waveforms.png)
 ![](images/jitter_controller_tests.png)
+<figcaption> Figure 10: Jitter Controller module testbench output.</figcaption>
+
 ![](images/keyboard_mapper_waveforms.png)
 ![](images/keyboard_mapper_tests.png)
+<figcaption> Figure 11: Keyboard mapper module testbench output.</figcaption>
+
 ![](images/onehot_waveforms.png)
 ![](images/onehot_tests.png)
+<figcaption> Figure 12: One hot decoder module testbench output.</figcaption>
+
 ![](images/store_keypresses_waveforms.png)
 ![](images/store_keypresses_tests.png)
+<figcaption> Figure 13: Store keypresses module testbench output.</figcaption>
+
 ![](images/sync_waveforms.png)
 ![](images/sync_tests.png)
+<figcaption> Figure 14: Synchcronizer module testbench output.</figcaption>
 
 
 

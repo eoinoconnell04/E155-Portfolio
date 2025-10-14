@@ -9,6 +9,8 @@ website:
         text: Home
       - labs.qmd
       - resources.qmd
+      - href: ./E155-Project/project.qmd
+        text: Project
       - href: blog.qmd
         text: Blog
 
