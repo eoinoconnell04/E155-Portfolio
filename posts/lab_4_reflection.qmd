@@ -1,0 +1,11 @@
+---
+title: "Lab 4 Reflection"
+description: "Working with MCUs in lab 4."
+author: "Eoin O'Connell"
+date: "9/30/25"
+categories:
+  - reflection
+draft: false
+---
+
+I just finished the first MCU lab of E155, and it was difficult because we had to write header files and drivers for our specific MCU by looking at the data sheet. I am pretty comfortable writting in C, but it was difficult to use the built in timers becuase there were many specific registers that had to be set. Once I knew that a register had to be set to a specific mode, the syntax of setting it was very simple, but I tested my design numerous times without it working because a register was not properly setup. 

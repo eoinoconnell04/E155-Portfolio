@@ -1,0 +1,17 @@
+---
+title: "Labs 1-3 Reflections"
+description: "Reflecting on FPGA labs 1-3."
+author: "Eoin O'Connell"
+date: "9/16/25"
+categories:
+  - reflection
+draft: false
+---
+
+I just finished lab 3 in E155, finishing up the section focusing on FPGAs. Over labs 1-3 I worked on projects centered around seven segment displays, each using the learnings from the previous labs. In lab 1, I configured 4 dip switches to control a hexadecimal digit on a seven segment display. 
+
+The following week in lab 2, I resused many of the same modules from lab 1 to have 2 separate dip switches to represent two numbers simultaneously on 2 different seven segment displays. The challenge here was utilizing clock multiplexing and PNP transistors to rapidly switch between powering one display and the other, giving the illusion that both are on simultaneously. In reality, only one is ever on a time, but it is way to fast for the human eye to detect any flickering. This allows us to not duplicate the number of pins and hardware that we use do add another display.
+
+Lab 3 built on lab 2 even further, by using a 4x4 keypad to allow a user to click on a number, and the keypad shows the 2 most recently pressed numbers. This introduced a number of challenges, such as dealing with clock debouncing, dealing with multiple keypresses at once, pressing a key multiple times in a row, and dealing with asynchronous inputs, to name a few.
+
+Throughout these projects, I got significantly better at utilizing version control, testbenches, and creating block diagrams and schematics of my designs. It has been exciting to present my projects in a more official format on my quarto portfolio, even if it means extra work during the week. So far, I have been pretty good with time managament, with no late nights and having used no late passes or redos. I need to try to keep this up for the MCU labs, but I am less familiar with this content so it will likely be more difficult.
