@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Drake Gonzales &amp; Eoin O’Connell">
 
-<title>Lab 7: The Advanced Encryption Standard – E155 Portfolio</title>
+<title>IIR Filter Math and Calculations – E155 Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,8 +69,37 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../../styles.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -79,7 +109,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">E155 Portfolio</span>
     </a>
   </div>
@@ -90,23 +120,23 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../labs.html"> 
+    <a class="nav-link" href="../labs.html"> 
 <span class="menu-text">Labs</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../resources.html"> 
+    <a class="nav-link" href="../resources.html"> 
 <span class="menu-text">Resources</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../E155-Project/project.html"> 
+    <a class="nav-link" href="../E155-Project/project.html"> 
 <span class="menu-text">Project</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../blog.html"> 
+    <a class="nav-link" href="../blog.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -120,21 +150,45 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#iir-filter-overview" id="toc-iir-filter-overview" class="nav-link active" data-scroll-target="#iir-filter-overview">IIR Filter Overview</a>
+  <ul class="collapse">
+  <li><a href="#general-iir-filter-equation" id="toc-general-iir-filter-equation" class="nav-link" data-scroll-target="#general-iir-filter-equation">General IIR Filter Equation</a></li>
+  <li><a href="#second-order-biquad-iir-filter-equation" id="toc-second-order-biquad-iir-filter-equation" class="nav-link" data-scroll-target="#second-order-biquad-iir-filter-equation">Second-Order (Biquad) IIR Filter Equation</a></li>
+  <li><a href="#filter-flow-graphs" id="toc-filter-flow-graphs" class="nav-link" data-scroll-target="#filter-flow-graphs">Filter Flow Graphs</a></li>
+  </ul></li>
+  <li><a href="#coefficient-calculations" id="toc-coefficient-calculations" class="nav-link" data-scroll-target="#coefficient-calculations">Coefficient Calculations</a>
+  <ul class="collapse">
+  <li><a href="#low-shelf-filter" id="toc-low-shelf-filter" class="nav-link" data-scroll-target="#low-shelf-filter">Low Shelf Filter</a></li>
+  <li><a href="#high-shelf-filter" id="toc-high-shelf-filter" class="nav-link" data-scroll-target="#high-shelf-filter">High Shelf Filter</a></li>
+  <li><a href="#peaking-mid-cut-boost-filter" id="toc-peaking-mid-cut-boost-filter" class="nav-link" data-scroll-target="#peaking-mid-cut-boost-filter">Peaking (Mid Cut / Boost) Filter</a></li>
+  </ul></li>
+  <li><a href="#stability-considerations" id="toc-stability-considerations" class="nav-link" data-scroll-target="#stability-considerations">Stability Considerations</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lab 7: The Advanced Encryption Standard</h1>
+<h1 class="title">IIR Filter Math and Calculations</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Drake Gonzales &amp; Eoin O’Connell </p>
+          </div>
+  </div>
     
   
     
@@ -145,8 +199,97 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="iir-filter-overview" class="level2">
+<h2 class="anchored" data-anchor-id="iir-filter-overview">IIR Filter Overview</h2>
+<p>An IIR (Infinite Impulse Response) filter is a digital filter that computes each output sample using both current and past input values as well as past output values. This feedback structure allows it to achieve sharp frequency responses with fewer coefficients than an FIR filter but can introduce stability and phase concerns.</p>
+<section id="general-iir-filter-equation" class="level3">
+<h3 class="anchored" data-anchor-id="general-iir-filter-equation">General IIR Filter Equation</h3>
+<p><span class="math display">\[
+y[n] = \sum_{k=0}^{M} b_k\,x[n-k] - \sum_{k=1}^{N} a_k\,y[n-k]
+\]</span></p>
+</section>
+<section id="second-order-biquad-iir-filter-equation" class="level3">
+<h3 class="anchored" data-anchor-id="second-order-biquad-iir-filter-equation">Second-Order (Biquad) IIR Filter Equation</h3>
+<p><span class="math display">\[
+y[n] = b_0\,x[n] + b_1\,x[n-1] + b_2\,x[n-2]
+      - a_1\,y[n-1] - a_2\,y[n-2]
+\]</span></p>
+</section>
+<section id="filter-flow-graphs" class="level3">
+<h3 class="anchored" data-anchor-id="filter-flow-graphs">Filter Flow Graphs</h3>
+<p>The most intuitive way to visualize an IIR filter is in Direct Form I. In this form, you can clearly see input samples being delayed (ie. <span class="math inline">\(x[n-1]\)</span>, <span class="math inline">\(x[n-2]\)</span>), and being multiplied by a coefficient <span class="math inline">\(a_k\)</span> and summed together. Likewise, output <span class="math inline">\(y[n]\)</span> gets delayed (ie. <span class="math inline">\(y[n-1]\)</span>, <span class="math inline">\(y[n-2]\)</span>), and scaled by <span class="math inline">\(b_k\)</span> and summed together to find the current <span class="math inline">\(y[n]\)</span>.</p>
+<img src="images/IIR_direct_form_I.png" class="img-fluid">
+<figcaption>
+Figure 1: IIR Filter Direct Form I.
+</figcaption>
+<p>We can recognize that there are two independent linear systems on either side of the dashed line. A property of linear systems is that we can rearrange them. This leads us to the following intermediate form.</p>
+<img src="images/IIR_intermediate_form.png" class="img-fluid">
+<figcaption>
+Figure 2: IIR Filter Direct Intermediate Form.
+</figcaption>
+<p>Looking at figure 2, the delay elements are in parallel with nothing in between them. This means that they are always the same values throughout the delay chain. We can reduce this redundancy by combining both sides to use the same delay elements.</p>
+<img src="images/IIR_direct_form_II.png" class="img-fluid">
+<figcaption>
+Figure 3: IIR Filter Direct Form II.
+</figcaption>
+<p>Figure 3 shows how the delay elements are combined to create the most compact implementation, known as Direct Form II. This structure is also the most memory-efficient, requiring only two stored values instead of four as in Direct Form I. Therefore, this is the form used for the IIR algorithm implemented on the FPGA.</p>
+</section>
+</section>
+<section id="coefficient-calculations" class="level2">
+<h2 class="anchored" data-anchor-id="coefficient-calculations">Coefficient Calculations</h2>
+<p>Now that we understand the structure of the filter, we still need to calculate the <span class="math inline">\(a_k\)</span> and <span class="math inline">\(b_k\)</span> coefficients for our filters. Our 3-band EQ will consist of 3 cascading filters, one each for lows, mids, and highs. Each of these filters will consist of a second-order order IIR filter. Thus, the coefficients for each filter will be independent, being a fucntion of the potentiometer input of the corresponding band.</p>
+<p>Our 3-band EQ uses three common second-order filter types. Each type has its own way of calculating the biquad coefficients <span class="math inline">\(a_k\)</span> and <span class="math inline">\(b_k\)</span>.</p>
+<section id="low-shelf-filter" class="level3">
+<h3 class="anchored" data-anchor-id="low-shelf-filter">Low Shelf Filter</h3>
+<p>A low shelf boosts or attenuates frequencies below a certain cutoff frequency (<span class="math inline">\(f_c\)</span>). The coefficients are calculated from the desired cutoff, gain, and sampling rate:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\omega &amp;= 2 \pi \frac{f_c}{f_s} \\
+A &amp;= 10^{\text{gain}/40} \\
+\alpha &amp;= \frac{\sin(\omega)}{2} \sqrt{\frac{A+1}{A-1}} \\
+b_0, b_1, b_2, a_0, a_1, a_2 &amp;= \text{functions of } \omega, \alpha, A
+\end{aligned}
+\]</span></p>
+</section>
+<section id="high-shelf-filter" class="level3">
+<h3 class="anchored" data-anchor-id="high-shelf-filter">High Shelf Filter</h3>
+<p>A high shelf affects frequencies above a certain cutoff (<span class="math inline">\(f_c\)</span>), either boosting or cutting them. The coefficient calculation is similar to the low shelf but reflects the change in frequency range:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\omega &amp;= 2 \pi \frac{f_c}{f_s} \\
+A &amp;= 10^{\text{gain}/40} \\
+\alpha &amp;= \frac{\sin(\omega)}{2} \sqrt{\frac{A+1}{A-1}} \\
+b_0, b_1, b_2, a_0, a_1, a_2 &amp;= \text{functions of } \omega, \alpha, A
+\end{aligned}
+\]</span></p>
+</section>
+<section id="peaking-mid-cut-boost-filter" class="level3">
+<h3 class="anchored" data-anchor-id="peaking-mid-cut-boost-filter">Peaking (Mid Cut / Boost) Filter</h3>
+<p>A peaking filter boosts or cuts a band of frequencies around a center frequency (<span class="math inline">\(f_c\)</span>), defined by a Q-factor that sets the bandwidth:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\omega &amp;= 2 \pi \frac{f_c}{f_s} \\
+\alpha &amp;= \frac{\sin(\omega)}{2 Q} \\
+A &amp;= 10^{\text{gain}/40} \\
+b_0, b_1, b_2, a_0, a_1, a_2 &amp;= \text{functions of } \omega, \alpha, A
+\end{aligned}
+\]</span></p>
+<p>Each of these formulas is then normalized by (<span class="math inline">\(a_0\)</span>) to produce the final biquad coefficients (<span class="math inline">\(b_0, b_1, b_2, a_1, a_2\)</span>) used in the FPGA implementation. The potentiometer for each band maps directly to the filter parameters (cutoff, gain, or Q), allowing real-time control.</p>
+</section>
+</section>
+<section id="stability-considerations" class="level2">
+<h2 class="anchored" data-anchor-id="stability-considerations">Stability Considerations</h2>
+<p>IIR filters rely on feedback from past outputs, which means their stability must be carefully managed. For our 3-band EQ, stability is particularly important when using high gains or narrow Q-factors in the peaking (mid) filter, or extreme boost/cut in the low and high shelf filters.</p>
+<p>A filter becomes unstable if the poles of its transfer function lie outside the unit circle in the z-plane. Practically, this can happen when: - Gain values are too large<br>
+- Q-factor is too high (causing a very narrow band with high resonance)<br>
+- Coefficient quantization on the FPGA introduces rounding errors</p>
+<p>To ensure stable operation in our FPGA implementation, we: 1. Limit the maximum gain and Q values based on typical audio ranges.<br>
+2. Use Direct Form II to minimize memory usage but carefully handle scaling to avoid overflow.<br>
+3. Normalize all coefficients by (<span class="math inline">\(a_0\)</span>) and use sufficient fixed-point precision for the coefficient representation.</p>
+<p>By following these precautions, each band of the EQ remains stable across the full range of potentiometer settings, ensuring smooth and reliable real-time audio filtering.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
