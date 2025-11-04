@@ -52,5 +52,14 @@
   },
   "posts/labs_1-3_reflection.qmd": {
     "labs_1-3_reflection.html": "298cd2f4"
+  },
+  "E155-Project/bode_plot_demo.qmd": {
+    "bode_plot_demo.html": "1bde5f50"
+  },
+  "E155-Project/project_proposal.qmd": {
+    "project_proposal.html": "3e09e667"
+  },
+  "E155-Project/IIR_filter.qmd": {
+    "IIR_filter.html": "69cf1441"
   }
 }

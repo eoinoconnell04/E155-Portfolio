@@ -1,3 +1,56 @@
 ---
-title: "Lab 5: Interrupts"
+title: "Lab 6: The Internet of Things and Serial Peripheral Interface"
 ---
+
+## Introduction
+
+This is the second Lab in E155 working with microcontrollers. The goal of this lab is to get comfortable with interrupts through designing an algorithm to sense quadrature encoder pulses and convert these into motor velocity and direction.
+
+The goal of this lab is to implement an internet-accessible device to control an onboard LED and measure ambient temperature. It uses an ESP8266 with the provided web server code to host the webpage and use the onboard MCU GPIO and SPI peripherals to toggle an LED and to read temperature from a DS1722 temperature sensor. Users can turn the LED ON and OFF and view the current temperature from the webpage.
+
+## Design and Testing Methodology
+
+The primary challenge of this lab is to interface with periferals with different protocols, such as USART and SPI. I wrote custom drivers for my MCU to communicate with the wifi and temperature sensor chips, configured for their specific parameters.
+
+### Segger Testing
+
+Before ever flashing the MCU or connecting the motor, I tested my code in Segger Embedded Studio, loaded with drivers and packages for my STM32L432KC MCU. This allowed me to test that my code was working as intended. 
+
+## Technical Documentation:
+
+The code for my project can be found on my github page. [Lab6 Github Repository](https://github.com/eoinoconnell04/E155-Lab6)
+
+### Schematic
+
+![](images/schematic.png)
+
+<figcaption> Figure 1: Schematic of the Physical Circuit.</figcaption>
+
+Figure 1 shows the physical layout of the design.
+
+## Results and Discussion
+
+<!-- I accomplished all of the perscribed tasks: The microcontroller correctly measures the velocity and direction of the motor.
+-->
+
+I have not gotten the MCU to work correctly yet. I plan to get this working in the next few days.
+
+## Conclusion
+
+I am still getting errors in segger and have not tested it on the MCU yet. I have spent 10 hours so far.
+
+<!--
+
+Lab 5 was moderately difficult for this class, due to it being the first MCU lab. I spent around 15 hours in total working on this lab, with a lot of time going through the interrupts tutorial and device datasheets.
+
+The lab was succesfull as I was able to get everything to work as intended.
+
+-->
+
+## AI Prototype Summary
+
+> **_LLM Prompt 1:_**  
+I’m making a web portal to interface with a temperature sensor. Create a HTML page that looks good and is intuitive to show the temperature, control an LED, and change the precision of the readout.
+
+> **_LLM Prompt 2:_**  
+Write me a C function to carry out a SPI transaction to retrieve a temperature reading from a DS1722 sensor. Make use of CMSIS libraries for the STM32L432KC.
