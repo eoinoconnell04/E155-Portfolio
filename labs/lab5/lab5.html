@@ -231,8 +231,8 @@ Figure 1: MCU Output with function generator set to 19.1 Khz Using Interrupt Met
 Figure 2: MCU Output with function generator set to 19.1 Khz Using Polling Method.
 </figcaption>
 <p>Here, I used my polling based method, but at the maximum frequency that I used for the polling based method. Here we see very severe aliasing, and we have unusable data. We still see a majority of datapoints showing the correct value, but we have some higher and some lower, and lots of noise.</p>
-<p>The polling based method stopped being stable around 12 KHz on the function generator. This explains why we did not see any issues with the motor at 20V, as this is slightly more than double the roughly 5.2 RPM that was the max. If the motor went any faster, to say 7 RPM, we would see issues with the polling method but not the interrupt method.</p>
-<p>In conclusion, I would be able to detect a motor moving to around <strong>9.5 RPM</strong> using the interrupt based method without having any aliasing effects, but would start having problems at <strong>6 RPM</strong> using the polling based method.</p>
+<p>The polling based method stopped being stable around 12 KHz on the function generator. This explains why we did not see any issues with the motor at 20V, as this is equivalent to the motor at 14 RPM, which is way more than the ~5 RPM of the motor. If the motor was above 14 RPM, we would see issues with the polling method but not the interrupt method (up to a point).</p>
+<p>In conclusion, I would be able to detect a motor moving to around <strong>23 RPM</strong> using the interrupt based method without having any aliasing effects, but would start having problems at <strong>14 RPM</strong> using the polling based method.</p>
 </section>
 <section id="flow-chart" class="level3">
 <h3 class="anchored" data-anchor-id="flow-chart">Flow Chart</h3>
