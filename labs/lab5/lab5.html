@@ -158,6 +158,7 @@ window.Quarto = {
   <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a>
   <ul class="collapse">
   <li><a href="#interrupt-based-code-vs-polling-based-code" id="toc-interrupt-based-code-vs-polling-based-code" class="nav-link" data-scroll-target="#interrupt-based-code-vs-polling-based-code">Interrupt Based Code vs Polling Based Code</a></li>
+  <li><a href="#frequency-generator-tests" id="toc-frequency-generator-tests" class="nav-link" data-scroll-target="#frequency-generator-tests">Frequency Generator Tests</a></li>
   <li><a href="#flow-chart" id="toc-flow-chart" class="nav-link" data-scroll-target="#flow-chart">Flow Chart</a></li>
   <li><a href="#segger-testing" id="toc-segger-testing" class="nav-link" data-scroll-target="#segger-testing">Segger Testing</a></li>
   <li><a href="#frequency-and-direction-calculations" id="toc-frequency-and-direction-calculations" class="nav-link" data-scroll-target="#frequency-and-direction-calculations">Frequency and Direction Calculations</a></li>
@@ -212,12 +213,33 @@ window.Quarto = {
 <p>Interrupt servicing is almost always much faster than polling loops, meaning that we can detect a much higher max frequency before aliasing or any other issues arise.</p>
 <p>To test this, I created 2 different versions of my code, one with manual polling and one with interrupt based polling. Our power supplies go up to 20 V, and the motors can only handle around up to 24 V according to the data sheet, so 20 V is the maximum voltage I ran them at. At this speed, I was getting around 5 RPM. For both the polling and interrupt methods, this was a low enough speed that they were missing no edges, and thus no alliasing was observed. Eventually, the polling will hit it’s threshold before interrupts, but for a low speed application like this both are completely accaptable.</p>
 </section>
+<section id="frequency-generator-tests" class="level3">
+<h3 class="anchored" data-anchor-id="frequency-generator-tests">Frequency Generator Tests</h3>
+<p>Because the motor only goes up to around 5 RPM, we were not able to reach the threshold for aliasing either the interrupt or polling based methods. To push artificially higher loads, I used a square wave function generator set to 50% duty cycle, to simulate one of the quadrature encoder pins toggling.</p>
+<p>For this testing, I grounded one of the typical pins, and only used one of the pins (so we do not have direction data, but can test max frequency). I adjusted the frequency formulas to account for half as many interrupts / edges. Therefore, we are strictly measuring how fast the interrupts can measure edges vs how fast the polling method can detect a change in the pin value. For both of these methods, I kept the the calculations and printouts to be fair. Thus, it is not the fastest possible interrupt or the fastest possible polling (as I could make the ISR or the polling loop shorter), but it is a reasonable test for interrupts and polling in a real application such as this.</p>
+<blockquote class="blockquote">
+<p><strong><em>Function Generator Testing Note:</em></strong><br>
+Note, because I am using only one pin, this frequency will represent double the max RPM readable using the motor, as only one pin is toggling instead of two. With two pins, we get twice the interrupts, and we will start getting issues at half the rate. Thus, for this testing, the printed frequency is <strong>DOUBLE</strong> what we could achieve with a motor.</p>
+</blockquote>
+<p><img src="images/interrupt_19.1KHz.png" class="img-fluid"></p>
+<figcaption>
+Figure 1: MCU Output with function generator set to 19.1 Khz Using Interrupt Method.
+</figcaption>
+<p>Figure 1 shows a steady output of 47.13 Hz. There is no aliasing present. This is the maximum frequnecy that I could get a stable reading at, above this some slight aliasing occured, with the effect getting worse as I increased frequency.</p>
+<p><img src="images/polling_19.1KHz.png" class="img-fluid"></p>
+<figcaption>
+Figure 2: MCU Output with function generator set to 19.1 Khz Using Polling Method.
+</figcaption>
+<p>Here, I used my polling based method, but at the maximum frequency that I used for the polling based method. Here we see very severe aliasing, and we have unusable data. We still see a majority of datapoints showing the correct value, but we have some higher and some lower, and lots of noise.</p>
+<p>The polling based method stopped being stable around 12 KHz on the function generator. This explains why we did not see any issues with the motor at 20V, as this is slightly more than double the roughly 5.2 RPM that was the max. If the motor went any faster, to say 7 RPM, we would see issues with the polling method but not the interrupt method.</p>
+<p>In conclusion, I would be able to detect a motor moving to around <strong>9.5 RPM</strong> using the interrupt based method without having any aliasing effects, but would start having problems at <strong>6 RPM</strong> using the polling based method.</p>
+</section>
 <section id="flow-chart" class="level3">
 <h3 class="anchored" data-anchor-id="flow-chart">Flow Chart</h3>
 <p>My program uses an infinity loop consisting of a busy wait that is exited due to interrupts signalling a change in pin A or pin B. Then it does some calculations and measurements before entering the busy state again.</p>
 <p><img src="images/flow_chart.png" class="img-fluid"></p>
 <figcaption>
-Figure 1: Flow Chart of Interrupts and Main Loop Interactions.
+Figure 3: Flow Chart of Interrupts and Main Loop Interactions.
 </figcaption>
 </section>
 <section id="segger-testing" class="level3">
@@ -242,9 +264,9 @@ Figure 1: Flow Chart of Interrupts and Main Loop Interactions.
 <h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
 <p><img src="images/schematic.png" class="img-fluid"></p>
 <figcaption>
-Figure 2: Schematic of the Physical Circuit.
+Figure 4: Schematic of the Physical Circuit.
 </figcaption>
-<p>Figure 2 shows the physical layout of the design. It shows the microcontroller Pin 6, which has the audio output, first going through a 50 k<span class="math inline">\(\Omega\)</span> potentiometer to be able to adjust the volume. Then this output goes into the LM386 audio amplifier. By connecting 5V to pin 6, ground to pin 2, and the input to pin 3, and not connection any other pins, we get a gain of 20. This allows us to get a higher voltage output then would have been possible then straight out of the MCU.</p>
+<p>Figure 4 shows the physical layout of the design. It shows the microcontroller Pin 6, which has the audio output, first going through a 50 k<span class="math inline">\(\Omega\)</span> potentiometer to be able to adjust the volume. Then this output goes into the LM386 audio amplifier. By connecting 5V to pin 6, ground to pin 2, and the input to pin 3, and not connection any other pins, we get a gain of 20. This allows us to get a higher voltage output then would have been possible then straight out of the MCU.</p>
 <p>Finally, the amplifier output goes to a 8 W, 4 <span class="math inline">\(\Omega\)</span> speaker.</p>
 </section>
 </section>
@@ -256,23 +278,23 @@ Figure 2: Schematic of the Physical Circuit.
 <p>Here is an example output of what the MCU displays when the motor is running at around 10V. From the professor, we expect around 2 RPM at 10V. We can see that we are getting 2.2-2.3 RPM, so our motor is reading values that are reasonably correct. This shows that we are not missing edges and that we are getting accurate readings.</p>
 <img src="images/example_output.png" class="img-fluid">
 <figcaption>
-Figure 3: Example MCU Output (Motor Running at 10V).
+Figure 5: Example MCU Output (Motor Running at 10V).
 </figcaption>
-<p>We can see in Figure 3 that the output is not a smooth number as we would expect, there is a lot of data point to data point variation. I wanted to output the most recent data point for maximum resolution, but this introduces a lot of noise. In reality, the motor is not spinning perfectly even, there are points of more and less resistance. When you sample this often through having an interrupt on every edge, some will be slighly shorter or and longer than others. Additionally, this method relies on the points in the motor being even spread out, but there is slight variation which also introduces noise.</p>
+<p>We can see in Figure 5 that the output is not a smooth number as we would expect, there is a lot of data point to data point variation. I wanted to output the most recent data point for maximum resolution, but this introduces a lot of noise. In reality, the motor is not spinning perfectly even, there are points of more and less resistance. When you sample this often through having an interrupt on every edge, some will be slighly shorter or and longer than others. Additionally, this method relies on the points in the motor being even spread out, but there is slight variation which also introduces noise.</p>
 <p>In practice, I would introduce a moving average that takes the average <span class="math inline">\(\Delta T\)</span> from the last N samples to get a smoother measurement, but I didn’t incorporate this to satisfy the requirements of the lab.</p>
 </section>
 <section id="example-polling-based-output" class="level3">
 <h3 class="anchored" data-anchor-id="example-polling-based-output">Example Polling Based output</h3>
 <img src="images/polling_example.png" class="img-fluid">
 <figcaption>
-Figure 4: Example Polling Based MCU Output (Motor Running at 20V).
+Figure 6: Example Polling Based MCU Output (Motor Running at 20V).
 </figcaption>
-<p>In figure 4, we can see the output of the polling based method, with the motor running at 20V (my maximum). Even at this high speed we do not miss any edges. This shows that both methods are valid for these reasonable speeds.</p>
+<p>In figure 6, we can see the output of the polling based method, with the motor running at 20V (my maximum). Even at this high speed we do not miss any edges. This shows that both methods are valid for these reasonable speeds.</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>Lab 5 was pretty difficult for me compared to other labs, due to me having no experience with interrupts, and spending a lot of time just trying to get my first interrupt to register. Once I was able to detect an edge, it was only a few more hours to iron out some bugs with my frequency calculations, and dealing with a stopped motor.</p>
+<p>Lab 5 was pretty difficult for me compared to other labs, due to me having no experience with interrupts, and spending a lot of time just trying to get my first interrupt to register. Once I was able to detect an edge, it was only a few more hours to iron out some bugs with my frequency calculations, and dealing with a stopped motor. Overall, it took about 22 hours in total, including getting the polling method to work and finalize all testing and documentation.</p>
 <p>The lab was succesfull as I was able to get everything to work as intended.</p>
 </section>
 <section id="ai-prototype-summary" class="level2">
