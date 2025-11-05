@@ -24,8 +24,6 @@ title: "Labs"
 
 [Lab 5: Interrupts](labs/lab5/lab5.qmd)
 
-# In Progress Labs:
-
 ## Lab 6: The Internet of Things and Serial Peripheral Interface
 
 [Lab 6: The Internet of Things and Serial Peripheral Interface](labs/lab6/lab6.qmd)
