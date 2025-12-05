@@ -160,6 +160,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#functional-specifications" id="toc-functional-specifications" class="nav-link" data-scroll-target="#functional-specifications">Functional Specifications</a></li>
   <li><a href="#testbenches" id="toc-testbenches" class="nav-link" data-scroll-target="#testbenches">Testbenches</a></li>
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -201,6 +202,7 @@ window.Quarto = {
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>We met all of our specifications today, as we finally got our filtering to work correctly. This was an extremely difficult project that we both worked ~100 hours on each. We learned a lot about audio filtering, communication protocols, writting pipelined digital circuits, and perseverance.</p>
+<p>All of our code is available on our <a href="https://github.com/eoinoconnell04/E155-Project">github</a>.</p>
 <section id="functional-specifications" class="level3">
 <h3 class="anchored" data-anchor-id="functional-specifications">Functional Specifications</h3>
 <ul class="task-list">
@@ -243,6 +245,24 @@ The final report will include theoretical frequency responses and graph bode plo
 Figure 1: Top level testbench waveforms.
 </figcaption>
 <p>Here we modeled both I2S inputs and outputs from the ADC and DAC, and SPI inputs from the MCU. We were able to confirm that the audio coming in from I2S was being correctly filtered given the current coefficients coming in from the MCU.</p>
+</section>
+<section id="technical-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h3>
+<p><img src="images/block_diagram.png" class="img-fluid"></p>
+<figcaption>
+Figure 2: System Level Block Diagram.
+</figcaption>
+<p>Here we see to system level diagram of our project. It highlights the different components and the protocols that connect them.</p>
+<p><img src="images/rtl_block_diagram.png" class="img-fluid"></p>
+<figcaption>
+Figure 3: RTL Block Diagram.
+</figcaption>
+<p>Here we see to system level diagram of our project. It highlights the different components and the protocols that connect them.</p>
+<p><img src="images/schematic.png" class="img-fluid"></p>
+<figcaption>
+Figure 3: RTL Block Diagram.
+</figcaption>
+<p>Here we see to system level diagram of our project. It highlights the different components and the protocols that connect them.</p>
 
 
 </section>
