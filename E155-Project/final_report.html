@@ -136,14 +136,15 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#microcontroller-overview" id="toc-microcontroller-overview" class="nav-link" data-scroll-target="#microcontroller-overview">Microcontroller overview</a></li>
   <li><a href="#fpga-overview" id="toc-fpga-overview" class="nav-link" data-scroll-target="#fpga-overview">FPGA overview</a></li>
+  <li><a href="#hardware-components" id="toc-hardware-components" class="nav-link" data-scroll-target="#hardware-components">Hardware Components</a></li>
   <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a></li>
   <li><a href="#testing-and-methodology" id="toc-testing-and-methodology" class="nav-link" data-scroll-target="#testing-and-methodology">Testing and Methodology</a>
   <ul class="collapse">
   <li><a href="#testbenches" id="toc-testbenches" class="nav-link" data-scroll-target="#testbenches">Testbenches</a></li>
   <li><a href="#decibal-meter" id="toc-decibal-meter" class="nav-link" data-scroll-target="#decibal-meter">Decibal Meter</a></li>
+  </ul></li>
   <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-  </ul></li>
   </ul>
 </nav>
     </div>
@@ -242,6 +243,83 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="fpga-overview">FPGA overview</h2>
 <p>The FPGA on the other hand was used as the main brain for this project. To be able to recieve audio from the external ADC, an I2S peripheral, made by Lattice, was used to control the RX and TX internal modules. The RX module was designed to input/ latch the audio in, while the TX was used to create the necessary bit clk, LR clk, and latch the output audio. Along side this, the FPGA took in SPI inputs from the MCU via written SPI verilog. The filtering was done using the internal peripheral MAC16 (Multiply-Accumulate) and was processed using a 16-bit biqud IRR filter fsm.</p>
 </section>
+<section id="hardware-components" class="level2">
+<h2 class="anchored" data-anchor-id="hardware-components">Hardware Components</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Quantity</th>
+<th>Function</th>
+<th>Interface</th>
+<th>Approx. Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/6250/26249971"><strong>Adafruit PCM5102 I²S DAC</strong></a></td>
+<td>1</td>
+<td>Digital-to-Analog Converter</td>
+<td>I²S</td>
+<td>~$6</td>
+<td>16–32 bit, 8–384 kHz sampling, 3.3V logic, 2.1 V-rms output</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.amazon.com/PCM1808-Single-Ended-Analog-Input-Decoder-Amplifier/dp/B0D9LNGBD1/ref=sr_1_2?crid=36BETC5DF3MKP&amp;dib=eyJ2IjoiMSJ9.nlR0qPjoFMWLXWvcVm5knddFFm91uZHicUMUQt7fQD2tq6s6qm5W_n4pyBM6xX-trNWgHX6ewn1atXHg6hRTejlrJI4auPOkpfjZueUFzJ0HZSB1_9DcHHzd51PVCwachjMeg7oem3HzbDuk_DUKRi_Ou52n5owbxklLTIAMG7AehH1ymr8ug4BEVaRgoWhk7Gr5YJGwMOrE1Mv-jY4hdG5l_VchhpsW65TVBDcg-eXAThgxDyTGwFhXx4VQ6AGPKSC5HkG-lvhaMzcYhnWzVMCcgTSM6joVPOTBo1RBNyI.Pa8c9lwcgTzKRZBqkcgd8nNLlCZvq8dwTe9jsdVm5MM&amp;dib_tag=se&amp;keywords=PCM1802&amp;qid=1760390332&amp;s=industrial&amp;sprefix=%2Cindustrial%2C356&amp;sr=1-2"><strong>PCM1808 ADC</strong></a></td>
+<td>1</td>
+<td>Analog-to-Digital Converter</td>
+<td>I²S</td>
+<td>~$6</td>
+<td>24-bit, 8–96 kHz sampling, 3.3–5V supply</td>
+</tr>
+<tr class="odd">
+<td><a href="https://www.digikey.com/en/products/detail/kycon-inc/STX-3000/9975995"><strong>STX-3000 Audio Jack</strong></a></td>
+<td>1</td>
+<td>Stereo audio input connector</td>
+<td>Analog</td>
+<td>~$1</td>
+<td>3.5 mm TRS jack, through-hole and breadboard compatible</td>
+</tr>
+<tr class="even">
+<td><strong>3362 1/4-inch Square Trimpot Potentiometers</strong></td>
+<td>3</td>
+<td>User control for low, mid, and high bands</td>
+<td>Analog</td>
+<td>Stockroom</td>
+<td>Reads by MCU ADC pins</td>
+</tr>
+<tr class="odd">
+<td><strong>ICE40 UltraPlus FPGA Board</strong></td>
+<td>1</td>
+<td>Real-time DSP core</td>
+<td>I²C, SPI</td>
+<td>On Hand</td>
+<td>Performs all filtering</td>
+</tr>
+<tr class="even">
+<td><strong>STM32L432KC MCU Board</strong></td>
+<td>1</td>
+<td>User interface and coefficient computation</td>
+<td>SPI, ADC</td>
+<td>On Hand</td>
+<td>Communicates with FPGA</td>
+</tr>
+<tr class="odd">
+<td><strong>Miscellaneous Components</strong></td>
+<td>n/a</td>
+<td>Op-amps, resistors, capacitors, wires</td>
+<td>Analog</td>
+<td>Stockroom</td>
+<td>Used for signal conditioning, biasing, and connections</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subtotal parts cost:</strong> ~<strong>$13</strong> (excluding lab stock components).</p>
+<p><strong>Shipping and Taxes:</strong> ~<strong>$8</strong></p>
+<p><strong>Total external parts cost:</strong> ~<strong>$21</strong>.</p>
+<hr>
+</section>
 <section id="technical-documentation" class="level1">
 <h1>Technical Documentation</h1>
 <p><img src="images/block_diagram.png" class="img-fluid"></p>
@@ -287,16 +365,16 @@ Figure 6: Top level testbench waveforms.
 <h2 class="anchored" data-anchor-id="decibal-meter">Decibal Meter</h2>
 <p>We used a decibal meter app on our phone to analyze the frequency response of our filters. We would play a tone on a computer connected to our filter input, and measure the decibals with each band open and at full attenuation. We found a max of around 1 dB drop when attenuating a band that did not include the target frequency (ie. a high pitch sound and cutting out mid frequencies), and over 10 dB when attenuating the target frequencies. This is a very significant reduction which we are very happy with. We could make the attenuation even steeper by adjusting the coefficients, or change our knobs to allow for boosts as well as cuts.</p>
 </section>
-<section id="acknowledgements" class="level2">
-<h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
+</section>
+<section id="acknowledgements" class="level1">
+<h1>Acknowledgements</h1>
 <p>We would like to thank Prof.&nbsp;Matthew Spencer for teaching us so much this semester. Additionally, a sepcial thanks to Xavier Walter for helping us debug countless problems this year and giving us the tools we needed to be successful. Finally, thanks to the rest of the HMC lab and stockroom staff.</p>
 </section>
-<section id="references" class="level2">
-<h2 class="anchored" data-anchor-id="references">References</h2>
+<section id="references" class="level1">
+<h1>References</h1>
 <p><a href="https://www.latticesemi.com/products/designsoftwareandip/intellectualproperty/ipcore/ipcores04/i2s">Lattice iCE40 UltraPlus I2S IP General purpose I2S controller</a>.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

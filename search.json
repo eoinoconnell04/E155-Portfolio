@@ -518,6 +518,13 @@
     "text": "FPGA overview\nThe FPGA on the other hand was used as the main brain for this project. To be able to recieve audio from the external ADC, an I2S peripheral, made by Lattice, was used to control the RX and TX internal modules. The RX module was designed to input/ latch the audio in, while the TX was used to create the necessary bit clk, LR clk, and latch the output audio. Along side this, the FPGA took in SPI inputs from the MCU via written SPI verilog. The filtering was done using the internal peripheral MAC16 (Multiply-Accumulate) and was processed using a 16-bit biqud IRR filter fsm."
   },
   {
+    "objectID": "E155-Project/final_report.html#hardware-components",
+    "href": "E155-Project/final_report.html#hardware-components",
+    "title": "Project Final Report",
+    "section": "Hardware Components",
+    "text": "Hardware Components\n\n\n\nComponent\nQuantity\nFunction\nInterface\nApprox. Cost\nNotes\n\n\n\n\nAdafruit PCM5102 I²S DAC\n1\nDigital-to-Analog Converter\nI²S\n~$6\n16–32 bit, 8–384 kHz sampling, 3.3V logic, 2.1 V-rms output\n\n\nPCM1808 ADC\n1\nAnalog-to-Digital Converter\nI²S\n~$6\n24-bit, 8–96 kHz sampling, 3.3–5V supply\n\n\nSTX-3000 Audio Jack\n1\nStereo audio input connector\nAnalog\n~$1\n3.5 mm TRS jack, through-hole and breadboard compatible\n\n\n3362 1/4-inch Square Trimpot Potentiometers\n3\nUser control for low, mid, and high bands\nAnalog\nStockroom\nReads by MCU ADC pins\n\n\nICE40 UltraPlus FPGA Board\n1\nReal-time DSP core\nI²C, SPI\nOn Hand\nPerforms all filtering\n\n\nSTM32L432KC MCU Board\n1\nUser interface and coefficient computation\nSPI, ADC\nOn Hand\nCommunicates with FPGA\n\n\nMiscellaneous Components\nn/a\nOp-amps, resistors, capacitors, wires\nAnalog\nStockroom\nUsed for signal conditioning, biasing, and connections\n\n\n\nSubtotal parts cost: ~$13 (excluding lab stock components).\nShipping and Taxes: ~$8\nTotal external parts cost: ~$21."
+  },
+  {
     "objectID": "E155-Project/final_report.html#testbenches",
     "href": "E155-Project/final_report.html#testbenches",
     "title": "Project Final Report",
@@ -530,20 +537,6 @@
     "title": "Project Final Report",
     "section": "Decibal Meter",
     "text": "Decibal Meter\nWe used a decibal meter app on our phone to analyze the frequency response of our filters. We would play a tone on a computer connected to our filter input, and measure the decibals with each band open and at full attenuation. We found a max of around 1 dB drop when attenuating a band that did not include the target frequency (ie. a high pitch sound and cutting out mid frequencies), and over 10 dB when attenuating the target frequencies. This is a very significant reduction which we are very happy with. We could make the attenuation even steeper by adjusting the coefficients, or change our knobs to allow for boosts as well as cuts."
-  },
-  {
-    "objectID": "E155-Project/final_report.html#acknowledgements",
-    "href": "E155-Project/final_report.html#acknowledgements",
-    "title": "Project Final Report",
-    "section": "Acknowledgements",
-    "text": "Acknowledgements\nWe would like to thank Prof. Matthew Spencer for teaching us so much this semester. Additionally, a sepcial thanks to Xavier Walter for helping us debug countless problems this year and giving us the tools we needed to be successful. Finally, thanks to the rest of the HMC lab and stockroom staff."
-  },
-  {
-    "objectID": "E155-Project/final_report.html#references",
-    "href": "E155-Project/final_report.html#references",
-    "title": "Project Final Report",
-    "section": "References",
-    "text": "References\nLattice iCE40 UltraPlus I2S IP General purpose I2S controller."
   },
   {
     "objectID": "E155-Project/mac16_notes.html",
