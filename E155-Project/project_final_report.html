@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Drake Gonzales &amp; Eoin O’Connell">
 
-<title>Project: Real Time 3-Band EQ Filtering – E155 Portfolio</title>
+<title>project_final_report – E155 Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -103,7 +102,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Resources</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../E155-Project/project.html" aria-current="page"> 
+    <a class="nav-link" href="../E155-Project/project.html"> 
 <span class="menu-text">Project</span></a>
   </li>  
   <li class="nav-item">
@@ -121,111 +120,17 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a>
-  <ul class="collapse">
-  <li><a href="#features" id="toc-features" class="nav-link" data-scroll-target="#features">Features</a></li>
-  <li><a href="#hardware" id="toc-hardware" class="nav-link" data-scroll-target="#hardware">Hardware</a></li>
-  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
-  </ul></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Project: Real Time 3-Band EQ Filtering</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Drake Gonzales &amp; Eoin O’Connell </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
 
 
-</header>
 
-
-<div style="position:fixed; left:0; top:0; width:250px; height:100%; background:#f8f9fa; padding:1em; padding-top:3em;">
-<h4 class="anchored">
-Links
-</h4>
-<ul>
-<li>
-<a href="../E155-Project/project_proposal.html">Project Proposal</a>
-</li>
-<li>
-<a href="../E155-Project/bode_plot_demo.html">Interactive 3-Band EQ Simulator</a>
-</li>
-<li>
-<a href="../E155-Project/IIR_filter.html">IIR Filter Math and Calculations</a>
-</li>
-<li>
-<a href="../E155-Project/midpoint_checkoff.html">Midpoint Checkoff</a>
-</li>
-<li>
-<a href="../E155-Project/final_checkoff.html">Final Checkoff</a>
-</li>
-</ul>
-</div>
-<section id="overview" class="level1" style="margin-left:100px; padding:1em;">
-<h1>Overview</h1>
-<p>This project implements a <strong>real-time 3-band equalizer</strong> that can independently adjust low, mid, and high frequencies of an audio signal. Audio is input via a <strong>1/8-inch auxiliary cable</strong>, digitized by an <strong>ADC</strong>, processed on an <strong>FPGA</strong>, and output through a <strong>DAC</strong> to stereo speakers.</p>
-<p>Three potentiometers allow live control of each frequency band, enabling hands-on EQ adjustment with <strong>minimal latency</strong>.</p>
-<section id="features" class="level2">
-<h2 class="anchored" data-anchor-id="features">Features</h2>
-<ul>
-<li>Three adjustable bands:
-<ul>
-<li>Low: ~100–400 Hz</li>
-<li>Mid: ~400 Hz–2 kHz</li>
-<li>High: ~2–8 kHz</li>
-</ul></li>
-<li>Real-time digital filtering on an <strong>iCE40 UltraPlus FPGA</strong></li>
-<li><strong>MCU-controlled</strong> filter coefficients sent via SPI</li>
-<li>Stereo input/output using I²S protocol</li>
-<li>Bypass mode preserves original audio when knobs are neutral</li>
-</ul>
-</section>
-<section id="hardware" class="level2">
-<h2 class="anchored" data-anchor-id="hardware">Hardware</h2>
-<ul>
-<li>iCE40 UltraPlus FPGA</li>
-<li>STM32L432KC MCU</li>
-<li>PCM1808 ADC</li>
-<li>PCM5102 DAC</li>
-<li>3 x potentiometers for EQ control</li>
-<li>Standard 1/8-inch audio input</li>
-</ul>
-</section>
-<section id="usage" class="level2">
-<h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<ol type="1">
-<li>Connect an audio source to the ADC.</li>
-<li>Adjust low, mid, and high potentiometers to modify EQ in real time.</li>
-<li>Audio output is sent to speakers via the DAC.</li>
-</ol>
-
-
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
