@@ -42,6 +42,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/videojs/video.min.js"></script>
+<link href="../site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,6 +72,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -136,13 +167,17 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#microcontroller-overview" id="toc-microcontroller-overview" class="nav-link" data-scroll-target="#microcontroller-overview">Microcontroller overview</a></li>
   <li><a href="#fpga-overview" id="toc-fpga-overview" class="nav-link" data-scroll-target="#fpga-overview">FPGA overview</a></li>
-  <li><a href="#hardware-components" id="toc-hardware-components" class="nav-link" data-scroll-target="#hardware-components">Hardware Components</a></li>
+  <li><a href="#hardware-components" id="toc-hardware-components" class="nav-link" data-scroll-target="#hardware-components">Hardware Components</a>
+  <ul class="collapse">
+  <li><a href="#new-hardware-overview" id="toc-new-hardware-overview" class="nav-link" data-scroll-target="#new-hardware-overview">New Hardware Overview</a></li>
+  </ul></li>
   <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a></li>
   <li><a href="#testing-and-methodology" id="toc-testing-and-methodology" class="nav-link" data-scroll-target="#testing-and-methodology">Testing and Methodology</a>
   <ul class="collapse">
   <li><a href="#testbenches" id="toc-testbenches" class="nav-link" data-scroll-target="#testbenches">Testbenches</a></li>
   <li><a href="#decibal-meter" id="toc-decibal-meter" class="nav-link" data-scroll-target="#decibal-meter">Decibal Meter</a></li>
   </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
   <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -318,7 +353,13 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Subtotal parts cost:</strong> ~<strong>$13</strong> (excluding lab stock components).</p>
 <p><strong>Shipping and Taxes:</strong> ~<strong>$8</strong></p>
 <p><strong>Total external parts cost:</strong> ~<strong>$21</strong>.</p>
+<section id="new-hardware-overview" class="level3">
+<h3 class="anchored" data-anchor-id="new-hardware-overview">New Hardware Overview</h3>
+<p>By the time we started this project, we were very familiar with our board with the iCE40 FGPA and STM32 MCU. One key aspect of this project was choosing some new hardware to learn about, and we choose to implement an external ADC and DAC that communciated over I2S. We had already implemented other communication protocols for previous labs in E155, including SPI and UART, so it was easy to understand the timing diagrams and pick up I2S.</p>
+<p>The ADC and DAC communicate with the FPGA, and our FPGA manuafacturer, Lattice Semiconductor, provides a <a href="https://www.latticesemi.com/products/designsoftwareandip/intellectualproperty/ipcore/ipcores04/i2s">library</a> with a controller for I2S specifically for our FPGA. Even with the working controllers, it took a few long days to succesfully pass through unfiltered audio through ADC, FPGA, and DAC to hear our first audio.</p>
+<p>Additionally, we used the built in ADC periferal for the first time on our microcontroller. This required written a new driver to enable and interface with the periferal, and this was used to measure the analog values from our potentiometer. The reason why we did not use this for our audio, was that audio latency was one of our key priorities, and this would have introduced extra latency and also resulted in lower quality audio.</p>
 <hr>
+</section>
 </section>
 <section id="technical-documentation" class="level1">
 <h1>Technical Documentation</h1>
@@ -365,6 +406,16 @@ Figure 6: Top level testbench waveforms.
 <h2 class="anchored" data-anchor-id="decibal-meter">Decibal Meter</h2>
 <p>We used a decibal meter app on our phone to analyze the frequency response of our filters. We would play a tone on a computer connected to our filter input, and measure the decibals with each band open and at full attenuation. We found a max of around 1 dB drop when attenuating a band that did not include the target frequency (ie. a high pitch sound and cutting out mid frequencies), and over 10 dB when attenuating the target frequencies. This is a very significant reduction which we are very happy with. We could make the attenuation even steeper by adjusting the coefficients, or change our knobs to allow for boosts as well as cuts.</p>
 </section>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<p>The results in this lab were completed as laid out within the project proposal. The FPGA was designed to perform real time IRR filtering, handle i2S communication, and recieve SPI. the MCU on the other hand was to compute the IRR coefficients based on potentiometer readings, and setup SPI. The goal of our project was also to setup an external ADC and DAC, which was completed duing the midpoint project checkoff. Our final deliverables were successfully completed as 3 potentiometers can be used to control the mid, low, and high frequency pitch of incoming audio. Audio is inputed into our system using external jacks and was scaled using op-amps. A couple risks that we were addressing throughout the project were latency, clock synchronization, 16-bit data paths, and exceeeding the internal LUT’s of the FPGA. With the completion of the project each risk was addressed and completed either visually and/or using a logic analyzer.</p>
+<p>Each band independently attenuates without interfering with the other bands, as we measured with the decibal meter and subjective listening tests. Each band has <strong>&gt;10 dB</strong> reduction measured with a microphone, and this is very noticable when listening. We are very happy with the filtering performance.</p>
+<p>We were also very satisfied with the latency we were able to achieve. Our main goal was to have imperceptible audio latency, and we achieved this by orders of magnitude.</p>
+<p>We use an audio visual sync test to get a rough measurement of latency. Humans can detect latency that is off by around 30-50 ms, and we have no noticable latency. We have a pipelined design where our output is delayed by 3 audio samples, which are at 63 kHz, which calculates to a latency on the order of 50 <span class="math inline">\(\micro\)</span> seconds.</p>
+<p>This project took ~200 hours to complete between the two of us.</p>
+<p><img src="images/box.jpeg" class="img-fluid"> <img src="images/knobs.jpeg" class="img-fluid"> <img src="images/interals.jpeg" class="img-fluid"></p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://www.youtube.com/shorts/qDhX_24WmPo?si=PED0XMGnXm1KNI5j"></video></div>
 </section>
 <section id="acknowledgements" class="level1">
 <h1>Acknowledgements</h1>
@@ -778,6 +829,7 @@ Figure 6: Top level testbench waveforms.
   });
   </script>
 </div> <!-- /content -->
+<script>videojs(video_shortcode_videojs_video1);</script>
 
 
 
