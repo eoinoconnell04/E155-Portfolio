@@ -42,8 +42,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="../site_libs/quarto-contrib/videojs/video.min.js"></script>
-<link href="../site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -268,6 +266,7 @@ window.Quarto = {
 <li>Audio output is sent to speakers via the DAC.</li>
 </ol>
 <p>All of our code is available on our <a href="https://github.com/eoinoconnell04/E155-Project">github</a>.</p>
+<p>Here is a live <a href="https://eoinoconnell04.github.io/E155-Portfolio/E155-Project/bode_plot_demo.html">Interactive Demo</a> that you can try out to see our simulated frequency response.</p>
 </section>
 </section>
 <section id="microcontroller-overview" class="level2">
@@ -414,8 +413,8 @@ Figure 6: Top level testbench waveforms.
 <p>We were also very satisfied with the latency we were able to achieve. Our main goal was to have imperceptible audio latency, and we achieved this by orders of magnitude.</p>
 <p>We use an audio visual sync test to get a rough measurement of latency. Humans can detect latency that is off by around 30-50 ms, and we have no noticable latency. We have a pipelined design where our output is delayed by 3 audio samples, which are at 63 kHz, which calculates to a latency on the order of 50 <span class="math inline">\(\micro\)</span> seconds.</p>
 <p>This project took ~200 hours to complete between the two of us.</p>
-<p><img src="images/box.jpeg" class="img-fluid"> <img src="images/knobs.jpeg" class="img-fluid"> <img src="images/interals.jpeg" class="img-fluid"></p>
-<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://www.youtube.com/shorts/qDhX_24WmPo?si=PED0XMGnXm1KNI5j"></video></div>
+<p><img src="images/box.jpeg" class="img-fluid"> <img src="images/knobs.jpeg" class="img-fluid"> <img src="images/internals.jpeg" class="img-fluid"></p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/PDhLHjlSDeo" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 </section>
 <section id="acknowledgements" class="level1">
 <h1>Acknowledgements</h1>
@@ -829,7 +828,6 @@ Figure 6: Top level testbench waveforms.
   });
   </script>
 </div> <!-- /content -->
-<script>videojs(video_shortcode_videojs_video1);</script>
 
 
 
